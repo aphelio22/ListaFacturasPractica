@@ -4,18 +4,25 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.listafacturaspractica.R
-import com.example.listafacturaspractica.domain.model.Invoice
+import com.example.listafacturaspractica.model.Invoice
 
-class InvoiceAdapter(private val invoiceList: List<Invoice>): RecyclerView.Adapter<InvoiceViewHolder>() {
+class InvoiceAdapter(): RecyclerView.Adapter<InvoiceViewHolder>() {
+
+    private var listInvoices: List<Invoice>? = null
+    fun setListInvoices(listInvoices: List<Invoice>?) {
+        this.listInvoices = listInvoices
+    }
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): InvoiceViewHolder {
         val layoutInflater = LayoutInflater.from(parent.context)
         return InvoiceViewHolder(layoutInflater.inflate(R.layout.item_facturas, parent, false))
     }
 
-    override fun getItemCount(): Int = invoiceList.size
+    override fun getItemCount(): Int {
+        if (listInvoices == null) return 0
+        return listInvoices?.size!!
+    }
 
     override fun onBindViewHolder(holder: InvoiceViewHolder, position: Int) {
-        val item = invoiceList[position]
-        holder.render(item)
+        holder.render(listInvoices?.get(position)!!)
     }
 }
