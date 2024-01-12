@@ -14,12 +14,16 @@ import androidx.room.Query
 interface InvoiceDao {
     /**
      * Método para obtener todas las facturas de las Base de Datos con Room.
+     *
+     * @return 'LiveData' de una lista de facturas.
      */
     @Query("SELECT * FROM invoice_table")
     fun getAllInvoices(): LiveData<List<Invoice>>
 
     /**
      * Método para insertar las facturas en la Base de Datos con Room.
+     *
+     * @param invoice Factura que se va a inyectar en la Base de Datos.
      */
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertInvoices(invoice: Invoice)

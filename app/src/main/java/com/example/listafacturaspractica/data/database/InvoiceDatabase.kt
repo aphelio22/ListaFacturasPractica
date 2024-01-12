@@ -25,6 +25,7 @@ abstract class InvoiceDatabase: RoomDatabase() {
          * Méttodo que crea una instancia de la Base de Datos de facturas utilizando
          * la variable 'DB_INSTANCE'.
          *
+         * @param context Contexto de la aplicación.
          * @return Una instancia de la Base de Datos.
          */
         fun getAppDBInstance(context: Context): InvoiceDatabase {
