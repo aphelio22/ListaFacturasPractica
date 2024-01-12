@@ -1,11 +1,13 @@
-package com.example.listafacturaspractica.database
+package com.example.listafacturaspractica.data.database
 
 import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
-import com.example.listafacturaspractica.model.Invoice
 
+/**
+ * Clase abstracta que crea la Base de Datos.
+ */
 @Database(entities = [Invoice::class], version = 1, exportSchema = false)
 abstract class InvoiceDatabase: RoomDatabase() {
     abstract fun getAppDao(): InvoiceDao

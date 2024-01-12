@@ -1,9 +1,9 @@
 package com.example.listafacturaspractica.di
 
 import android.content.Context
-import com.example.listafacturaspractica.database.InvoiceDao
-import com.example.listafacturaspractica.database.InvoiceDatabase
-import com.example.listafacturaspractica.network.RetroService
+import com.example.listafacturaspractica.data.database.InvoiceDao
+import com.example.listafacturaspractica.data.database.InvoiceDatabase
+import com.example.listafacturaspractica.data.network.RetroService
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -13,6 +13,15 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import javax.inject.Singleton
 
+/**
+ * Módulo Dagger Hilt que proporciona las dependencias necesarias para la inyección de dependencias en la aplicación.
+ *
+ * Este módulo incluye proveedores para la base de datos de facturas ([InvoiceDatabase]),
+ * el DAO de facturas ([InvoiceDao]), el servicio Retrofit para la comunicación con la API ([RetroService]),
+ * y la instancia de Retrofit utilizada para construir el servicio ([Retrofit]).
+ *
+ * @property BASE_URL La URL base de la API utilizada para construir la instancia de Retrofit.
+ */
 @Module
 @InstallIn(SingletonComponent::class)
 class AppModule {

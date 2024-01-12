@@ -1,12 +1,15 @@
-package com.example.listafacturaspractica.database
+package com.example.listafacturaspractica.data.database
 
 import androidx.lifecycle.LiveData
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
-import com.example.listafacturaspractica.model.Invoice
 
+/**
+ * Interfaz que establece los métodos que se usarán para manejar los datos de las distintas facturas en la Base de Datos
+ * con Room.
+ */
 @Dao
 interface InvoiceDao {
     @Query("SELECT * FROM invoice_table")

@@ -3,7 +3,7 @@ package com.example.listafacturaspractica.ui.view.adapter
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import com.example.listafacturaspractica.databinding.ItemFacturasBinding
-import com.example.listafacturaspractica.model.Invoice
+import com.example.listafacturaspractica.data.database.Invoice
 
 class InvoiceViewHolder(view: View): ViewHolder(view) {
     val binding = ItemFacturasBinding.bind(view)

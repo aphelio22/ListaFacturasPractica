@@ -11,7 +11,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.listafacturaspractica.R
 import com.example.listafacturaspractica.databinding.ActivityMainBinding
-import com.example.listafacturaspractica.model.Invoice
+import com.example.listafacturaspractica.data.database.Invoice
 import com.example.listafacturaspractica.ui.view.adapter.InvoiceAdapter
 import com.example.listafacturaspractica.ui.viewmodel.InvoiceViewModel
 import dagger.hilt.android.AndroidEntryPoint

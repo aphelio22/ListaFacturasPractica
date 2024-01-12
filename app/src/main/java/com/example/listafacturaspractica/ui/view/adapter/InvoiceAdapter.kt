@@ -4,7 +4,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.listafacturaspractica.R
-import com.example.listafacturaspractica.model.Invoice
+import com.example.listafacturaspractica.data.database.Invoice
 
 class InvoiceAdapter(): RecyclerView.Adapter<InvoiceViewHolder>() {
 
