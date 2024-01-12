@@ -26,26 +26,51 @@ import javax.inject.Singleton
 @InstallIn(SingletonComponent::class)
 class AppModule {
 
+    /**
+     * Métdodo que obtiene un instancia de la Base de Datos con Room.
+     *
+     * @return Una instancia de la clase 'InvoiceDatabase'.
+     */
     @Provides
     @Singleton
     fun getAppDatabase(@ApplicationContext context: Context): InvoiceDatabase {
         return InvoiceDatabase.getAppDBInstance(context)
     }
 
+    /**
+     * Método que obtiene una una instancia de la clase 'InvoiceDAO' que contiene
+     * métodos que se utilizan para manejar los datos de las facturas en la Base de Datos.
+     *
+     * @return Una instancia de la clase 'InvoiceDAO'
+     */
     @Provides
     @Singleton
     fun getAppDao(invoiceDatabase: InvoiceDatabase): InvoiceDao {
         return invoiceDatabase.getAppDao()
     }
 
+    /**
+     * URL de donde se obtienen los datos mediante Retrofit.
+     */
     val BASE_URL = "https://viewnextandroid.wiremockapi.cloud/"
 
+
+    /**
+     * Método Dagger que proporciona una instancia única de la interfaz RetroService utilizando Dagger y Retrofit.
+     *
+     * @return Instancia única de RetroService generada por Retrofit.
+     */
     @Provides
     @Singleton
     fun getRetroServiceInterface(retrofit: Retrofit): RetroService {
         return retrofit.create(RetroService::class.java)
     }
 
+    /**
+     * Método Dagger que proporciona una instancia única de Retrofit configurada con una URL base y un convertidor Gson.
+     *
+     * @return Instancia única de Retrofit configurada con la URL base y el convertidor Gson.
+     */
     @Provides
     @Singleton
     fun getRetroInstance(): Retrofit{
