@@ -6,6 +6,8 @@ import android.os.Bundle
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
+import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -28,7 +30,10 @@ class MainActivity : AppCompatActivity() {
 
         supportActionBar?.setTitle("Facturas")
 
-        invoiceAdapter = InvoiceAdapter()
+        invoiceAdapter = InvoiceAdapter(){
+            invoice ->  onItemSelected(invoice)
+        }
+
         initViewModel()
         initMainViewModel()
 
@@ -53,7 +58,9 @@ class MainActivity : AppCompatActivity() {
     private fun initViewModel() {
         binding.rvFacturas.apply {
             layoutManager = LinearLayoutManager(this@MainActivity)
-            invoiceAdapter = InvoiceAdapter()
+            invoiceAdapter = InvoiceAdapter(){
+                    invoice ->  onItemSelected(invoice)
+            }
             adapter = invoiceAdapter
         }
     }
@@ -70,5 +77,11 @@ class MainActivity : AppCompatActivity() {
                 Log.d("Datos", it.toString() )
             }
         })
+    }
+
+    private fun onItemSelected(invoice: Invoice) {
+        val fragmentManager = supportFragmentManager // Reemplaza con el FragmentManager adecuado
+        val customPopupFragment = FragmentPopUp()
+        customPopupFragment.show(fragmentManager, "FragmentPopUp")
     }
 }

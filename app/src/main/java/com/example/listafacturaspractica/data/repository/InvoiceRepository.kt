@@ -46,7 +46,7 @@ class InvoiceRepository @Inject constructor(
                 response: Response<InvoiceRepositoriesListResponse>
             ) {
                if (response.isSuccessful) {
-                   invoiceDao.deleteAllRecords()
+                   invoiceDao.deleteAllInvoices()
                    response.body()?.facturas?.forEach{
                        insertInvoicesInRoom(Invoice(descEstado = it.descEstado, importeOrdenacion = it.importeOrdenacion, fecha = it.fecha))
                    }

@@ -1,12 +1,13 @@
 package com.example.listafacturaspractica.ui.view.adapter
 
+import android.content.DialogInterface.OnClickListener
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.listafacturaspractica.R
 import com.example.listafacturaspractica.data.database.Invoice
 
-class InvoiceAdapter(): RecyclerView.Adapter<InvoiceViewHolder>() {
+class InvoiceAdapter(private val onClickListener: (Invoice) -> Unit): RecyclerView.Adapter<InvoiceViewHolder>() {
 
     private var listInvoices: List<Invoice>? = null
     fun setListInvoices(listInvoices: List<Invoice>?) {
@@ -23,6 +24,6 @@ class InvoiceAdapter(): RecyclerView.Adapter<InvoiceViewHolder>() {
     }
 
     override fun onBindViewHolder(holder: InvoiceViewHolder, position: Int) {
-        holder.render(listInvoices?.get(position)!!)
+        holder.render(listInvoices?.get(position)!!, onClickListener)
     }
 }
