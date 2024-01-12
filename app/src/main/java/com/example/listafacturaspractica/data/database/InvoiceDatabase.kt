@@ -10,10 +10,23 @@ import androidx.room.RoomDatabase
  */
 @Database(entities = [Invoice::class], version = 1, exportSchema = false)
 abstract class InvoiceDatabase: RoomDatabase() {
+
+    /**
+     * Método que obtiene un objeto DAO de la clase InvoiceDAO.
+     *
+     * @return Un objeto de clase InvoiceDAO.
+     */
     abstract fun getAppDao(): InvoiceDao
     companion object{
+        //Instancia de la Base de Datos.
         private var DB_INSTANCE: InvoiceDatabase? = null
 
+        /**
+         * Méttodo que crea una instancia de la Base de Datos de facturas utilizando
+         * la variable 'DB_INSTANCE'.
+         *
+         * @return Una instancia de la Base de Datos.
+         */
         fun getAppDBInstance(context: Context): InvoiceDatabase {
             if (DB_INSTANCE == null) {
                 DB_INSTANCE = Room.databaseBuilder(context.applicationContext, InvoiceDatabase::class.java, "invoice_database")

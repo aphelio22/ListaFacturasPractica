@@ -1,5 +1,6 @@
 package com.example.listafacturaspractica.data.repository
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import com.example.listafacturaspractica.data.database.InvoiceDao
 import com.example.listafacturaspractica.data.database.Invoice
@@ -11,7 +12,7 @@ import retrofit2.Response
 import javax.inject.Inject
 
 /**
- * Clase que controla métodos propios de Room y Retrofit.
+ * Clase que controla métodos propios de Room y Retrofit empleando Hilt.
  */
 class InvoiceRepository @Inject constructor(
     private val retroService: RetroService,
@@ -53,10 +54,13 @@ class InvoiceRepository @Inject constructor(
                }
             }
 
+            /**
+             * Método que informa de posibles errores a la hora de establecer la conexión
+             * con la Base de Datos.
+             */
             override fun onFailure(call: Call<InvoiceRepositoriesListResponse>, t: Throwable) {
-                //Do nothing
+                Log.d("ERROR", "Ha ocurrido un error al establecer la conexión.")
             }
-
         })
     }
 }
