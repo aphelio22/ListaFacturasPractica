@@ -30,6 +30,8 @@ class InvoiceRepository @Inject constructor(
 
     /**
      * Inserta facturas en la Base de Datos con Room utilizando el método propio definido en el DAO.
+     *
+     * @param invoice Facturas que van a inyectarse.
      */
     fun insertInvoicesInRoom(invoice: Invoice) {
         invoiceDao.insertInvoices(invoice)
@@ -57,6 +59,9 @@ class InvoiceRepository @Inject constructor(
             /**
              * Método que informa de posibles errores a la hora de establecer la conexión
              * con la Base de Datos.
+             *
+             * @param call La llamada (Call) que resultó en un error.
+             * @param t El objeto Throwable que representa el error ocurrido durante la conexión.
              */
             override fun onFailure(call: Call<InvoiceRepositoriesListResponse>, t: Throwable) {
                 Log.d("ERROR", "Ha ocurrido un error al establecer la conexión.")

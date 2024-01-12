@@ -29,6 +29,7 @@ class AppModule {
     /**
      * Métdodo que obtiene un instancia de la Base de Datos con Room.
      *
+     * @param context Contexto de la aplicación.
      * @return Una instancia de la clase 'InvoiceDatabase'.
      */
     @Provides
@@ -41,6 +42,8 @@ class AppModule {
      * Método que obtiene una una instancia de la clase 'InvoiceDAO' que contiene
      * métodos que se utilizan para manejar los datos de las facturas en la Base de Datos.
      *
+     * @param invoiceDatabase Instancia de la Base de Datos desde la cual se va a coger
+     * la instancia del DAO.
      * @return Una instancia de la clase 'InvoiceDAO'
      */
     @Provides
@@ -58,6 +61,7 @@ class AppModule {
     /**
      * Método Dagger que proporciona una instancia única de la interfaz RetroService utilizando Dagger y Retrofit.
      *
+     * @param retrofit Instancia de Retrofit.
      * @return Instancia única de RetroService generada por Retrofit.
      */
     @Provides
