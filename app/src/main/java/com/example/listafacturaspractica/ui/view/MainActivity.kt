@@ -34,8 +34,8 @@ class MainActivity : AppCompatActivity() {
 
         supportActionBar?.setTitle("Facturas")
 
-        invoiceAdapter = InvoiceAdapter(){
-            invoice ->  onItemSelected(invoice)
+        invoiceAdapter = InvoiceAdapter() { invoice ->
+            onItemSelected(invoice)
         }
 
         initViewModel()
@@ -51,11 +51,12 @@ class MainActivity : AppCompatActivity() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
             R.id.invoiceMenuMain -> {
-               val miIntent = Intent(this, FilterActivity::class.java)
+                val miIntent = Intent(this, FilterActivity::class.java)
                 miIntent.putExtra("MAX_IMPORTE", maxAmount)
                 startActivity(miIntent)
                 true
             }
+
             else -> super.onOptionsItemSelected(item)
         }
     }
@@ -63,8 +64,8 @@ class MainActivity : AppCompatActivity() {
     private fun initViewModel() {
         binding.rvFacturas.apply {
             layoutManager = LinearLayoutManager(this@MainActivity)
-            invoiceAdapter = InvoiceAdapter(){
-                    invoice ->  onItemSelected(invoice)
+            invoiceAdapter = InvoiceAdapter() { invoice ->
+                onItemSelected(invoice)
             }
             adapter = invoiceAdapter
         }
@@ -72,18 +73,18 @@ class MainActivity : AppCompatActivity() {
 
     private fun initMainViewModel() {
         val viewModel = ViewModelProvider(this).get(InvoiceViewModel::class.java)
-        viewModel.getAllRepositoryList().observe(this, Observer<List<Invoice>>{
+        viewModel.getAllRepositoryList().observe(this, Observer<List<Invoice>> {
             invoiceAdapter.setListInvoices(it)
             invoiceAdapter.notifyDataSetChanged()
 
 
             if (it.isEmpty()) {
                 viewModel.makeApiCall()
-                Log.d("Datos", it.toString() )
+                Log.d("Datos", it.toString())
             }
 
 
-                /*
+            /*
                 // Realizar las operaciones de filtrado aquí
 
                 // Filtrar por fecha
@@ -105,9 +106,10 @@ class MainActivity : AppCompatActivity() {
                 var invoiceList = it
 
                 invoiceList = verifyDateFilter(filter.maxDate, filter.minDate, invoiceList)
+                invoiceList = verifyBalanceBar(filter.maxValueSlider, invoiceList)
+                invoiceList = verifyCheckBox(filter.estate, invoiceList)
                 invoiceAdapter.setListInvoices(invoiceList)
                 Log.d("FILTRO2", filter.toString())
-
 
 
             } else {
@@ -122,6 +124,7 @@ class MainActivity : AppCompatActivity() {
         })
     }
 
+
     private fun onItemSelected(invoice: Invoice) {
         val fragmentManager = supportFragmentManager // Reemplaza con el FragmentManager adecuado
         val customPopupFragment = FragmentPopUp()
@@ -132,12 +135,16 @@ class MainActivity : AppCompatActivity() {
         var importeMaximo = 0.0
         for (factura in invoices) {
             val facturaActual = factura.importeOrdenacion
-            if(importeMaximo < facturaActual!!) importeMaximo = facturaActual
+            if (importeMaximo < facturaActual!!) importeMaximo = facturaActual
         }
-        return  importeMaximo
+        return importeMaximo
     }
 
-    private fun verifyDateFilter(maxDate: String, minDate: String, filterList: List<Invoice>): List<Invoice>{
+    private fun verifyDateFilter(
+        maxDate: String,
+        minDate: String,
+        filterList: List<Invoice>
+    ): List<Invoice> {
         val filteredInvoices = ArrayList<Invoice>()
         if (minDate != "Dia/Mes/Año" && maxDate != "Dia/Mes/Año") {
             val simpleDateFormat = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
@@ -154,7 +161,7 @@ class MainActivity : AppCompatActivity() {
                 var invoiceDate = Date()
                 try {
                     invoiceDate = simpleDateFormat.parse(invoice.fecha)
-                }catch (e: ParseException) {
+                } catch (e: ParseException) {
                     Log.d("Error2: ", "comprobarFiltroFechas: ParseException")
                 }
                 if (invoiceDate.after(minDateDate) && invoiceDate.before(maxDateDate)) {
@@ -164,4 +171,48 @@ class MainActivity : AppCompatActivity() {
         }
         return filteredInvoices
     }
+
+    private fun verifyCheckBox(
+        estate: HashMap<String, Boolean>,
+        invoiceList: List<Invoice>
+    ): List<Invoice> {
+        val checkBoxPaid = estate["PAGADAS_STRING"] ?: false
+        val checkBoxCanceled = estate["ANULADAS_STRING"] ?: false
+        val checkBoxFixedPayment = estate["CUOTA_FIJA_STRING"] ?: false
+        val checkBoxPendingPayment = estate["PENDIENTES_PAGO_STRING"] ?: false
+        val checkBoxPaymentPlan = estate["PLAN_PAGO_STRING"] ?: false
+
+        val filteredInvoices = ArrayList<Invoice>()
+
+        if (!checkBoxPaid && !checkBoxCanceled && !checkBoxFixedPayment && !checkBoxPendingPayment && !checkBoxPaymentPlan) {
+            return invoiceList // Devolver la lista original sin aplicar ningún filtro.
+        }
+
+        for (invoice in invoiceList) {
+            val invoiceState = invoice.descEstado
+            val isPaid = invoiceState == "Pagada"
+            val isCanceled = invoiceState == "Anuladas"
+            val isFixedPayment = invoiceState == "cuotaFija"
+            val isPendingPayment = invoiceState == "Pendiente de pago"
+            val isPaymentPlan = invoiceState == "planPago"
+
+            if ((isPaid && checkBoxPaid) || (isCanceled && checkBoxCanceled) || (isFixedPayment && checkBoxFixedPayment) || (isPendingPayment && checkBoxPendingPayment) || (isPaymentPlan && checkBoxPaymentPlan)) {
+                filteredInvoices.add(invoice)
+            }
+        }
+        return filteredInvoices
+    }
+
+    private fun verifyBalanceBar(maxValueSlider: Double, invoiceList: List<Invoice>): List<Invoice> {
+        val filteredInvoices = ArrayList<Invoice>()
+        for (factura in invoiceList) {
+            if (factura.importeOrdenacion!! < maxValueSlider) {
+                filteredInvoices.add(factura)
+            }
+        }
+        return filteredInvoices
+    }
+
+
+
 }
