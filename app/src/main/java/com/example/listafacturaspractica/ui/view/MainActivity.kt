@@ -16,6 +16,10 @@ import com.example.listafacturaspractica.ui.view.adapter.InvoiceAdapter
 import com.example.listafacturaspractica.ui.viewmodel.InvoiceViewModel
 import com.google.gson.Gson
 import dagger.hilt.android.AndroidEntryPoint
+import java.text.ParseException
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
@@ -76,7 +80,7 @@ class MainActivity : AppCompatActivity() {
             if (it.isEmpty()) {
                 viewModel.makeApiCall()
                 Log.d("Datos", it.toString() )
-            } else {
+            }
 
 
                 /*
@@ -95,17 +99,22 @@ class MainActivity : AppCompatActivity() {
                 invoiceAdapter.setListInvoices(filteredByCheckBox)
                 invoiceAdapter.notifyDataSetChanged()
                 */
-            }
             val filtroJson = intent.getStringExtra("FILTRO_ENVIAR_RECIBIR_DATOS")
             if (filtroJson != null) {
-                val filter = Gson().fromJson(filtroJson, Filter::class.java)
+                var filter = Gson().fromJson(filtroJson, Filter::class.java)
+                var invoiceList = it
+
+                invoiceList = verifyDateFilter(filter.maxDate, filter.minDate, invoiceList)
+                invoiceAdapter.setListInvoices(invoiceList)
                 Log.d("FILTRO2", filter.toString())
 
+
+
             } else {
-                // Manejar el caso en que el valor sea null
+                //Manejar el caso en que el valor sea null
                 Log.e("MainActivity", "El valor de FILTRO_ENVIAR_RECIBIR_DATOS es null")
             }
-            val invoiceList = it
+
             maxAmount = obtenerMayorImporte(it)
             Log.d("FILTROS!", filtroJson.toString())
 
@@ -126,5 +135,33 @@ class MainActivity : AppCompatActivity() {
             if(importeMaximo < facturaActual!!) importeMaximo = facturaActual
         }
         return  importeMaximo
+    }
+
+    private fun verifyDateFilter(maxDate: String, minDate: String, filterList: List<Invoice>): List<Invoice>{
+        val filteredInvoices = ArrayList<Invoice>()
+        if (minDate != "Dia/Mes/Año" && maxDate != "Dia/Mes/Año") {
+            val simpleDateFormat = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
+            var minDateDate: Date? = null
+            var maxDateDate: Date? = null
+
+            try {
+                minDateDate = simpleDateFormat.parse(minDate)
+                maxDateDate = simpleDateFormat.parse(maxDate)
+            } catch (e: ParseException) {
+                Log.d("Error1: ", "comprobarFiltroFechas: ParseException")
+            }
+            for (invoice in filterList) {
+                var invoiceDate = Date()
+                try {
+                    invoiceDate = simpleDateFormat.parse(invoice.fecha)
+                }catch (e: ParseException) {
+                    Log.d("Error2: ", "comprobarFiltroFechas: ParseException")
+                }
+                if (invoiceDate.after(minDateDate) && invoiceDate.before(maxDateDate)) {
+                    filteredInvoices.add(invoice)
+                }
+            }
+        }
+        return filteredInvoices
     }
 }
