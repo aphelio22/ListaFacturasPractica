@@ -8,7 +8,6 @@ import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.CheckBox
-import android.widget.Filter
 import android.widget.SeekBar
 import com.example.listafacturaspractica.R
 import com.example.listafacturaspractica.databinding.ActivityFilterBinding
@@ -24,7 +23,7 @@ class FilterActivity : AppCompatActivity() {
      * Binding para la vista de la Activity.
      */
     private lateinit var binding: ActivityFilterBinding
-    private lateinit var filtrar: Filtrar
+    private lateinit var filtrar: com.example.listafacturaspractica.ui.view.Filter
     private lateinit var paid: CheckBox
     private lateinit var canceled: CheckBox
     private lateinit var fixedPayment: CheckBox
@@ -57,7 +56,7 @@ class FilterActivity : AppCompatActivity() {
             Log.d("MAX", maxValueSlider.toString())
             Log.d("MINDATE", minDate.toString())
             Log.d("MAXDATE", maxDate.toString())
-            val filter: Filtrar = Filtrar(maxDate, minDate, maxValueSlider, state)
+            val filter: com.example.listafacturaspractica.ui.view.Filter = Filter(maxDate, minDate, maxValueSlider, state)
             val miIntent = Intent(this, MainActivity::class.java)
             miIntent.putExtra("FILTRO_ENVIAR_RECIBIR_DATOS", gson.toJson(filter))
             startActivity(miIntent)

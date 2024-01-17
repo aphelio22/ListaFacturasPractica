@@ -6,8 +6,6 @@ import android.os.Bundle
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
-import android.widget.Toast
-import androidx.appcompat.app.AlertDialog
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -100,7 +98,7 @@ class MainActivity : AppCompatActivity() {
             }
             val filtroJson = intent.getStringExtra("FILTRO_ENVIAR_RECIBIR_DATOS")
             if (filtroJson != null) {
-                val filter = Gson().fromJson(filtroJson, Filtrar::class.java)
+                val filter = Gson().fromJson(filtroJson, Filter::class.java)
                 Log.d("FILTRO2", filter.toString())
 
             } else {
