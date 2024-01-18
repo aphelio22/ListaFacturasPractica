@@ -23,7 +23,7 @@ class FilterActivity : AppCompatActivity() {
      * Binding para la vista de la Activity.
      */
     private lateinit var binding: ActivityFilterBinding
-    private lateinit var filtrar: com.example.listafacturaspractica.ui.view.Filter
+    private var filter: Filter? = null
     private lateinit var paid: CheckBox
     private lateinit var canceled: CheckBox
     private lateinit var fixedPayment: CheckBox
@@ -37,8 +37,25 @@ class FilterActivity : AppCompatActivity() {
 
         //Configura el título de la ToolBar.
         supportActionBar?.setTitle("Filtrar Facturas")
+    }
+
+    private fun initComponents() {
+        initCalendar()
+        initSeekBar()
+        initCheckBoxes()
+        applySavedFilters()
+        // Intenta cargar los filtros iniciales si existen
+        val filtroJson = intent.getStringExtra("FILTRO_ENVIAR_RECIBIR_DATOS")
+        if (filtroJson != null) {
+            filter = Gson().fromJson(filtroJson, Filter::class.java)
+            filter?.let { nonNullFilter ->
+                loadFilters(nonNullFilter)
+            }
+        }
+        Log.d("FiltroJSON", filtroJson.toString())
 
         binding.aplicar.setOnClickListener {
+            updateAndSaveFilters()
             val gson = Gson()
             val maxValueSlider = binding.valorSeekBar.text.toString().toDouble()
             val state = hashMapOf(
@@ -61,14 +78,27 @@ class FilterActivity : AppCompatActivity() {
             miIntent.putExtra("FILTRO_ENVIAR_RECIBIR_DATOS", gson.toJson(filter))
             startActivity(miIntent)
         }
-
-
     }
 
-    private fun initComponents() {
-        initCalendar()
-        initSeekBar()
-        initCheckBoxes()
+    private fun applySavedFilters() {
+        val prefs = getPreferences(MODE_PRIVATE)
+        val filterJson = prefs.getString("FILTER_STATE", null)
+
+        if (filterJson != null) {
+            val gson = Gson()
+            filter = gson.fromJson(filterJson, Filter::class.java)
+            filter?.let { nonNullFilter ->
+                loadFilters(nonNullFilter)
+            }
+        }
+    }
+
+    private fun saveFilterState(filter: Filter) {
+        val prefs = getPreferences(MODE_PRIVATE)
+        val gson = Gson()
+        val filterJson = gson.toJson(filter)
+
+        prefs.edit().putString("FILTER_STATE", filterJson).apply()
     }
 
     private fun initCalendar() {
@@ -163,8 +193,36 @@ class FilterActivity : AppCompatActivity() {
                     startActivity(miIntent)
                     true
                 }
-
                 else -> super.onOptionsItemSelected(item)
             }
         }
+
+    private fun loadFilters(filter: Filter) {
+        binding.fechaDesde.text = filter.minDate
+        binding.fechaHasta.text = filter.maxDate
+        binding.seekBar.progress = filter.maxValueSlider.toInt()
+        binding.cbPagadas.isChecked = filter.estate["PAGADAS_STRING"] ?: false
+        binding.cbAnuladas.isChecked = filter.estate["ANULADAS_STRING"] ?: false
+        binding.cbCuotaFija.isChecked = filter.estate["CUOTA_FIJA_STRING"] ?: false
+        binding.cbPendientesPago.isChecked = filter.estate["PENDIENTES_PAGO_STRING"] ?: false
+        binding.cbPlanPago.isChecked = filter.estate["PLAN_PAGO_STRING"] ?: false
+    }
+
+    private fun updateAndSaveFilters() {
+        // Actualiza los filtros
+        val maxValueSlider = binding.valorSeekBar.text.toString().toDouble()
+        val state = hashMapOf(
+            "PAGADAS_STRING" to paid.isChecked,
+            "ANULADAS_STRING" to canceled.isChecked,
+            "CUOTA_FIJA_STRING" to fixedPayment.isChecked,
+            "PENDIENTE_PAGO_STRING" to pendingPayment.isChecked,
+            "PLAN_PAGO_STRING" to paymentPlan.isChecked
+        )
+        val minDate = binding.fechaDesde.text.toString()
+        val maxDate = binding.fechaHasta.text.toString()
+        filter = Filter(maxDate, minDate, maxValueSlider, state)
+
+        // Guarda el estado de los filtros en las preferencias compartidas
+        saveFilterState(filter!!)
+    }
 }

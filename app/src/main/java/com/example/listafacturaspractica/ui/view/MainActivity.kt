@@ -1,6 +1,7 @@
 package com.example.listafacturaspractica.ui.view
 
 import android.content.Intent
+import android.content.SharedPreferences
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
@@ -15,6 +16,7 @@ import com.example.listafacturaspractica.data.database.Invoice
 import com.example.listafacturaspractica.ui.view.adapter.InvoiceAdapter
 import com.example.listafacturaspractica.ui.viewmodel.InvoiceViewModel
 import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
 import dagger.hilt.android.AndroidEntryPoint
 import java.text.ParseException
 import java.text.SimpleDateFormat
@@ -25,7 +27,9 @@ import java.util.Locale
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
     private lateinit var invoiceAdapter: InvoiceAdapter
+    private var filter: Filter? = null
     private var maxAmount: Double = 0.0
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -49,10 +53,14 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        var gson = Gson()
         return when (item.itemId) {
             R.id.invoiceMenuMain -> {
                 val miIntent = Intent(this, FilterActivity::class.java)
                 miIntent.putExtra("MAX_IMPORTE", maxAmount)
+                if (filter != null) {
+                    miIntent.putExtra("FILTRO_ENVIAR_RECIBIR_DATOS", gson.toJson(filter))
+                }
                 startActivity(miIntent)
                 true
             }
@@ -74,43 +82,36 @@ class MainActivity : AppCompatActivity() {
     private fun initMainViewModel() {
         val viewModel = ViewModelProvider(this).get(InvoiceViewModel::class.java)
         viewModel.getAllRepositoryList().observe(this, Observer<List<Invoice>> {
-            invoiceAdapter.setListInvoices(it)
-            invoiceAdapter.notifyDataSetChanged()
+            var filteredList = getFilteredListFromSharedPreferences()
 
+            if (filteredList == null || filteredList.isEmpty()) {
+                // Si la lista filtrada no está en SharedPreferences, cargar la lista original
+                invoiceAdapter.setListInvoices(it)
+            } else {
+                // Si hay una lista filtrada almacenada, usarla
+                invoiceAdapter.setListInvoices(filteredList)
+            }
+
+            invoiceAdapter.notifyDataSetChanged()
 
             if (it.isEmpty()) {
                 viewModel.makeApiCall()
                 Log.d("Datos", it.toString())
             }
 
-
-            /*
-                // Realizar las operaciones de filtrado aquí
-
-                // Filtrar por fecha
-                val filteredByDate = comprobarFiltroFechas(fechaMax, fechaMin, invoices)
-
-                // Filtrar por barra de importe
-                val filteredByImporte = comprobarBarraImporte(maxValuesSlider, filteredByDate)
-
-                // Filtrar por CheckBox
-                val filteredByCheckBox = comprobarChekBox(estado, filteredByImporte)
-
-                // Actualizar el adaptador con la lista filtrada
-                invoiceAdapter.setListInvoices(filteredByCheckBox)
-                invoiceAdapter.notifyDataSetChanged()
-                */
             val filtroJson = intent.getStringExtra("FILTRO_ENVIAR_RECIBIR_DATOS")
             if (filtroJson != null) {
-                var filter = Gson().fromJson(filtroJson, Filter::class.java)
+                filter = Gson().fromJson(filtroJson, Filter::class.java)
                 var invoiceList = it
 
-                invoiceList = verifyDateFilter(filter.maxDate, filter.minDate, invoiceList)
-                invoiceList = verifyBalanceBar(filter.maxValueSlider, invoiceList)
-                invoiceList = verifyCheckBox(filter.estate, invoiceList)
-                invoiceAdapter.setListInvoices(invoiceList)
-                Log.d("FILTRO2", filter.toString())
-
+                filter?.let { nonNullFilter ->
+                    invoiceList = verifyDateFilter(nonNullFilter.maxDate, nonNullFilter.minDate, invoiceList)
+                    invoiceList = verifyBalanceBar(nonNullFilter.maxValueSlider, invoiceList)
+                    invoiceList = verifyCheckBox(nonNullFilter.estate, invoiceList)
+                    saveFilteredListToSharedPreferences(invoiceList)
+                    invoiceAdapter.setListInvoices(invoiceList)
+                    Log.d("FILTRO2", filter.toString())
+                }
 
             } else {
                 //Manejar el caso en que el valor sea null
@@ -119,8 +120,6 @@ class MainActivity : AppCompatActivity() {
 
             maxAmount = obtenerMayorImporte(it)
             Log.d("FILTROS!", filtroJson.toString())
-
-
         })
     }
 
@@ -203,7 +202,10 @@ class MainActivity : AppCompatActivity() {
         return filteredInvoices
     }
 
-    private fun verifyBalanceBar(maxValueSlider: Double, invoiceList: List<Invoice>): List<Invoice> {
+    private fun verifyBalanceBar(
+        maxValueSlider: Double,
+        invoiceList: List<Invoice>
+    ): List<Invoice> {
         val filteredInvoices = ArrayList<Invoice>()
         for (factura in invoiceList) {
             if (factura.importeOrdenacion!! < maxValueSlider) {
@@ -213,6 +215,26 @@ class MainActivity : AppCompatActivity() {
         return filteredInvoices
     }
 
+    private fun saveFilteredListToSharedPreferences(filteredList: List<Invoice>) {
+        val gson = Gson()
+        val filteredListJson = gson.toJson(filteredList)
+
+        val prefs: SharedPreferences = getPreferences(MODE_PRIVATE)
+        prefs.edit().putString("FILTERED_LIST", filteredListJson).apply()
+    }
+
+    private fun getFilteredListFromSharedPreferences(): List<Invoice>? {
+        val prefs: SharedPreferences = getPreferences(MODE_PRIVATE)
+        val filteredListJson: String? = prefs.getString("FILTERED_LIST", null)
+
+        return if (filteredListJson != null) {
+            val gson = Gson()
+            val type = object : TypeToken<List<Invoice>>() {}.type
+            gson.fromJson(filteredListJson, type)
+        } else {
+            null
 
 
+        }
+    }
 }
