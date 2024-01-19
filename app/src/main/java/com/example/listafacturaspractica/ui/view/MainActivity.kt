@@ -80,7 +80,7 @@ class MainActivity : AppCompatActivity() {
 
 
     private fun initViewModel() {
-        binding.rvFacturas.apply {
+        binding.rvInvoices.apply {
             layoutManager = LinearLayoutManager(this@MainActivity)
             invoiceAdapter = InvoiceAdapter() { invoice ->
                 onItemSelected(invoice)
