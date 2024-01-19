@@ -33,13 +33,19 @@ class Constants {
          */
         const val PAYMENT_PLAN_STRING: String = "PAYMENT_PLAN_STRING"
 
-        //Clave del Intent Enviar/Recibir.
-        /** Clave del Intent que se utiliza para enviar/recibir datos de los filtros
+        //Claves de Intent.
+        /**
+         * Clave del Intent que se utiliza para enviar/recibir datos de los filtros
          * entre MainActivity y FilterActivity.
          * */
         const val SEND_RECEIVE_FILTERS: String = "SEND_RECEIVE_FILTERS"
 
-        //Claves SharedPreferences.
+        /**
+         * Clave uilizada para obtener el máximo importe de las facturas.
+         */
+        const val MAX_AMOUNT: String = "MAX_AMOUNT"
+
+        //Claves demSharedPreferences.
         /**
          * Clave utilizada en las SheredPreferences de la clase FilterActivity
          * para almacenar la información de los filtros seleccionados.

@@ -155,7 +155,7 @@ class FilterActivity : AppCompatActivity() {
 
     private fun initSeekBar() {
         //Declaración SeekBar.
-        maxAmount = intent.getDoubleExtra("MAX_IMPORTE", 0.0).toInt() + 1
+        maxAmount = intent.getDoubleExtra(Constants.MAX_AMOUNT, 0.0).toInt() + 1
         binding.seekBar.max = maxAmount
         binding.tvMaxSeekbar.text = "${maxAmount}€"
         binding.tvMinSeekbar.text = "0€"
@@ -259,7 +259,7 @@ class FilterActivity : AppCompatActivity() {
     }
 
     private fun resetFilters() {
-        maxAmount = intent.getDoubleExtra("MAX_IMPORTE", 0.0).toInt() + 1
+        maxAmount = intent.getDoubleExtra(Constants.MAX_AMOUNT, 0.0).toInt() + 1
         binding.fechaDesde.text = getString(R.string.botonDesde)
         binding.fechaHasta.text = getString(R.string.botonHasta)
         binding.seekBar.progress = maxAmount

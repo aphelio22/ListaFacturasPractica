@@ -147,7 +147,7 @@ class MainActivity : AppCompatActivity() {
         return when (item.itemId) {
             R.id.invoiceMenuMain -> {
                 val miIntent = Intent(this, FilterActivity::class.java)
-                miIntent.putExtra("MAX_IMPORTE", maxAmount)
+                miIntent.putExtra(Constants.MAX_AMOUNT, maxAmount)
                 if (filter != null) {
                     miIntent.putExtra(Constants.SEND_RECEIVE_FILTERS, gson.toJson(filter))
                 }
