@@ -14,6 +14,7 @@ import com.example.listafacturaspractica.R
 import com.example.listafacturaspractica.databinding.ActivityMainBinding
 import com.example.listafacturaspractica.data.database.Invoice
 import com.example.listafacturaspractica.ui.view.adapter.InvoiceAdapter
+import com.example.listafacturaspractica.ui.view.constants.Constants
 import com.example.listafacturaspractica.ui.viewmodel.InvoiceViewModel
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
@@ -212,11 +213,11 @@ class MainActivity : AppCompatActivity() {
         estate: HashMap<String, Boolean>,
         invoiceList: List<Invoice>
     ): List<Invoice> {
-        val checkBoxPaid = estate["PAGADAS_STRING"] ?: false
-        val checkBoxCanceled = estate["ANULADAS_STRING"] ?: false
-        val checkBoxFixedPayment = estate["CUOTA_FIJA_STRING"] ?: false
-        val checkBoxPendingPayment = estate["PENDIENTES_PAGO_STRING"] ?: false
-        val checkBoxPaymentPlan = estate["PLAN_PAGO_STRING"] ?: false
+        val checkBoxPaid = estate[Constants.PAID_STRING] ?: false
+        val checkBoxCanceled = estate[Constants.CANCELED_STRING] ?: false
+        val checkBoxFixedPayment = estate[Constants.FIXED_PAYMENT_STRING] ?: false
+        val checkBoxPendingPayment = estate[Constants.PENDING_PAYMENT_STRING] ?: false
+        val checkBoxPaymentPlan = estate[Constants.PAYMENT_PLAN_STRING] ?: false
 
         val filteredInvoices = ArrayList<Invoice>()
 

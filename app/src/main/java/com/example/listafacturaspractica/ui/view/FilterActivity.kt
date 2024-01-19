@@ -11,6 +11,7 @@ import android.widget.CheckBox
 import android.widget.SeekBar
 import com.example.listafacturaspractica.R
 import com.example.listafacturaspractica.databinding.ActivityFilterBinding
+import com.example.listafacturaspractica.ui.view.constants.Constants
 import com.google.gson.Gson
 import java.text.ParseException
 import java.text.SimpleDateFormat
@@ -64,11 +65,11 @@ class FilterActivity : AppCompatActivity() {
             val gson = Gson()
             val maxValueSlider = binding.valorSeekBar.text.toString().toDouble()
             val state = hashMapOf(
-                "PAGADAS_STRING" to paid.isChecked,
-                "ANULADAS_STRING" to canceled.isChecked,
-                "CUOTA_FIJA_STRING" to fixedPayment.isChecked,
-                "PENDIENTES_PAGO_STRING" to pendingPayment.isChecked,
-                "PLAN_PAGO_STRING" to paymentPlan.isChecked
+                Constants.PAID_STRING to paid.isChecked,
+                Constants.CANCELED_STRING to canceled.isChecked,
+                Constants.FIXED_PAYMENT_STRING to fixedPayment.isChecked,
+                Constants.PENDING_PAYMENT_STRING to pendingPayment.isChecked,
+                Constants.PAYMENT_PLAN_STRING to paymentPlan.isChecked
             )
 
             val minDate = binding.fechaDesde.text.toString()
@@ -230,22 +231,22 @@ class FilterActivity : AppCompatActivity() {
         binding.fechaDesde.text = filter.minDate
         binding.fechaHasta.text = filter.maxDate
         binding.seekBar.progress = filter.maxValueSlider.toInt()
-        binding.cbPagadas.isChecked = filter.estate["PAGADAS_STRING"] ?: false
-        binding.cbAnuladas.isChecked = filter.estate["ANULADAS_STRING"] ?: false
-        binding.cbCuotaFija.isChecked = filter.estate["CUOTA_FIJA_STRING"] ?: false
-        binding.cbPendientesPago.isChecked = filter.estate["PENDIENTES_PAGO_STRING"] ?: false
-        binding.cbPlanPago.isChecked = filter.estate["PLAN_PAGO_STRING"] ?: false
+        binding.cbPagadas.isChecked = filter.estate[Constants.PAID_STRING] ?: false
+        binding.cbAnuladas.isChecked = filter.estate[Constants.CANCELED_STRING] ?: false
+        binding.cbCuotaFija.isChecked = filter.estate[Constants.FIXED_PAYMENT_STRING] ?: false
+        binding.cbPendientesPago.isChecked = filter.estate[Constants.PENDING_PAYMENT_STRING] ?: false
+        binding.cbPlanPago.isChecked = filter.estate[Constants.PAYMENT_PLAN_STRING] ?: false
     }
 
     private fun updateAndSaveFilters() {
         // Actualiza los filtros
         val maxValueSlider = binding.valorSeekBar.text.toString().toDouble()
         val state = hashMapOf(
-            "PAGADAS_STRING" to paid.isChecked,
-            "ANULADAS_STRING" to canceled.isChecked,
-            "CUOTA_FIJA_STRING" to fixedPayment.isChecked,
-            "PENDIENTES_PAGO_STRING" to pendingPayment.isChecked,
-            "PLAN_PAGO_STRING" to paymentPlan.isChecked
+            Constants.PAID_STRING to paid.isChecked,
+            Constants.CANCELED_STRING to canceled.isChecked,
+            Constants.FIXED_PAYMENT_STRING to fixedPayment.isChecked,
+            Constants.PENDING_PAYMENT_STRING to pendingPayment.isChecked,
+            Constants.PAYMENT_PLAN_STRING to paymentPlan.isChecked
         )
         val minDate = binding.fechaDesde.text.toString()
         val maxDate = binding.fechaHasta.text.toString()
