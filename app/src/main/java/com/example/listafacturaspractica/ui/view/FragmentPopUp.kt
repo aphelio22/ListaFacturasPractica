@@ -11,7 +11,7 @@ import com.example.listafacturaspractica.databinding.PopUpBinding
 /**
  * Clase que representa un Fragmento de Diálogo (pop-up) para mostrar información adicional.
  */
-class FragmentPopUp: DialogFragment() {
+class FragmentPopUp(private val message: String): DialogFragment() {
 
     /**
      * Binding para la vista del Fragmento de Diálogo.
@@ -26,6 +26,8 @@ class FragmentPopUp: DialogFragment() {
         //Crea un constructor de diálogo utilizando el contexto de la actividad.
         val builder = AlertDialog.Builder(requireActivity())
         builder.setView(binding.root)
+
+        binding.mensajePopup.text = message
 
         //Configura el comportamiento de los elementos de diseño.
         binding.botonCerrarPopUp.setOnClickListener {

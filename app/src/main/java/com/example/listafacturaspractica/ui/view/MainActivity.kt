@@ -23,12 +23,34 @@ import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
 
+/**
+ * MainActivity representa la pantalla principal de la aplicación,
+ * mostrando una lista de facturas.
+ */
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
+    /**
+     * Binding de la clase MainActivity.
+     */
     private lateinit var binding: ActivityMainBinding
+
+    /**
+     * Instancia del adaptador de las facturas.
+     */
     private lateinit var invoiceAdapter: InvoiceAdapter
+
+    /**
+     * Instancia de la clase Filter.
+     */
     private var filter: Filter? = null
+
+    /**
+     * Valor máximo del importe de las facturas que se le debe pasar
+     * a la SeekBar de FilterActivity.
+     */
     private var maxAmount: Double = 0.0
+
+    private var minDate: String = ""
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -36,15 +58,82 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        //Establece el título de la Toolbar en 'Facturas'.
         supportActionBar?.setTitle("Facturas")
 
+        //Permite establecer un 'onClickListener' en cada elemento de la lista de facturas.
         invoiceAdapter = InvoiceAdapter() { invoice ->
             onItemSelected(invoice)
         }
+        initComponents()
+    }
 
+    /**
+     * Inicializa los componentes relacionados con la comunicación entre la interfaz de usuario
+     * y los datos de la aplicación, configurando el ViewModel principal y otros elementos necesarios.
+     */
+    private fun initComponents() {
         initViewModel()
         initMainViewModel()
+    }
 
+
+    private fun initViewModel() {
+        binding.rvFacturas.apply {
+            layoutManager = LinearLayoutManager(this@MainActivity)
+            invoiceAdapter = InvoiceAdapter() { invoice ->
+                onItemSelected(invoice)
+            }
+            adapter = invoiceAdapter
+        }
+    }
+
+    private fun initMainViewModel() {
+        val viewModel = ViewModelProvider(this).get(InvoiceViewModel::class.java)
+        viewModel.getAllRepositoryList().observe(this, Observer<List<Invoice>> {
+
+            var filteredList = getFilteredListFromSharedPreferences()
+            if (filteredList == null || filteredList.isEmpty()) { //Si la lista filtrada no está en SharedPreferences, carga la lista original.
+                invoiceAdapter.setListInvoices(it)
+            } else {  //Si hay una lista filtrada almacenada, se usa.
+                invoiceAdapter.setListInvoices(filteredList)
+            }
+            invoiceAdapter.notifyDataSetChanged()
+
+            if (it.isEmpty()) { //Si la lista original está vacía, se llama a la Api y se llena la lista.
+                viewModel.makeApiCall()
+                Log.d("Datos", it.toString())
+            }
+
+            /* Recibe la selección de datos que se ha hecho en los componentes de FilterActivity como un objeto
+            *  y los utiliza para filtrar la lista de facturas.*/
+            val filtroJson = intent.getStringExtra("FILTRO_ENVIAR_RECIBIR_DATOS")
+            if (filtroJson != null) {
+                filter = Gson().fromJson(filtroJson, Filter::class.java)
+
+                var invoiceList = it
+
+                //Verifica los datos según la fecha, el valor de la SeekBar y los CheckBoxes, y se aplican los filtros.
+                filter?.let { nonNullFilter ->
+                    invoiceList = verifyDateFilter(nonNullFilter.maxDate, nonNullFilter.minDate, invoiceList)
+                    invoiceList = verifyBalanceBar(nonNullFilter.maxValueSlider, invoiceList)
+                    invoiceList = verifyCheckBox(nonNullFilter.estate, invoiceList)
+
+                    //Se gusarda la lista en SharedPreferences.
+                    saveFilteredListToSharedPreferences(invoiceList)
+
+                    //Se le pasa al adaptador la lista filtrada.
+                    invoiceAdapter.setListInvoices(invoiceList)
+                    Log.d("FILTRO2", filter.toString())
+                }
+            } else { //Se maneja el caso en el que 'filtroJson' sea null.
+                Log.e("MainActivity", "El valor de FILTRO_ENVIAR_RECIBIR_DATOS es null")
+            }
+
+            //Se obtiene el máximo importe de las facturas para enviarse a FilterActivity.
+            maxAmount = obtenerMayorImporte(it)
+            Log.d("FILTROS!", filtroJson.toString())
+        })
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -69,74 +158,22 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun initViewModel() {
-        binding.rvFacturas.apply {
-            layoutManager = LinearLayoutManager(this@MainActivity)
-            invoiceAdapter = InvoiceAdapter() { invoice ->
-                onItemSelected(invoice)
-            }
-            adapter = invoiceAdapter
-        }
-    }
-
-    private fun initMainViewModel() {
-        val viewModel = ViewModelProvider(this).get(InvoiceViewModel::class.java)
-        viewModel.getAllRepositoryList().observe(this, Observer<List<Invoice>> {
-            var filteredList = getFilteredListFromSharedPreferences()
-
-            if (filteredList == null || filteredList.isEmpty()) {
-                // Si la lista filtrada no está en SharedPreferences, cargar la lista original
-                invoiceAdapter.setListInvoices(it)
-            } else {
-                // Si hay una lista filtrada almacenada, usarla
-                invoiceAdapter.setListInvoices(filteredList)
-            }
-
-            invoiceAdapter.notifyDataSetChanged()
-
-            if (it.isEmpty()) {
-                viewModel.makeApiCall()
-                Log.d("Datos", it.toString())
-            }
-
-            val filtroJson = intent.getStringExtra("FILTRO_ENVIAR_RECIBIR_DATOS")
-            if (filtroJson != null) {
-                filter = Gson().fromJson(filtroJson, Filter::class.java)
-                var invoiceList = it
-
-                filter?.let { nonNullFilter ->
-                    invoiceList = verifyDateFilter(nonNullFilter.maxDate, nonNullFilter.minDate, invoiceList)
-                    invoiceList = verifyBalanceBar(nonNullFilter.maxValueSlider, invoiceList)
-                    invoiceList = verifyCheckBox(nonNullFilter.estate, invoiceList)
-                    saveFilteredListToSharedPreferences(invoiceList)
-                    invoiceAdapter.setListInvoices(invoiceList)
-                    Log.d("FILTRO2", filter.toString())
-                }
-
-            } else {
-                //Manejar el caso en que el valor sea null
-                Log.e("MainActivity", "El valor de FILTRO_ENVIAR_RECIBIR_DATOS es null")
-            }
-
-            maxAmount = obtenerMayorImporte(it)
-            Log.d("FILTROS!", filtroJson.toString())
-        })
-    }
-
-
     private fun onItemSelected(invoice: Invoice) {
         val fragmentManager = supportFragmentManager // Reemplaza con el FragmentManager adecuado
-        val customPopupFragment = FragmentPopUp()
+        val customPopupFragment = FragmentPopUp("Esta función aún no ha sido implementada")
         customPopupFragment.show(fragmentManager, "FragmentPopUp")
     }
 
-    private fun obtenerMayorImporte(invoices: List<Invoice>): Double {
-        var importeMaximo = 0.0
-        for (factura in invoices) {
-            val facturaActual = factura.importeOrdenacion
-            if (importeMaximo < facturaActual!!) importeMaximo = facturaActual
-        }
-        return importeMaximo
+    private fun obtenerMayorImporte(invoicesList: List<Invoice>): Double {
+        var maxAmount = 0.0
+
+        for (invoice in invoicesList) {
+            val actualInvoiceAmount = invoice.importeOrdenacion
+                if (maxAmount < actualInvoiceAmount!!) {
+                    maxAmount = actualInvoiceAmount
+                }
+            }
+        return maxAmount
     }
 
     private fun verifyDateFilter(
@@ -147,12 +184,12 @@ class MainActivity : AppCompatActivity() {
         val filteredInvoices = ArrayList<Invoice>()
         if (minDate != "Dia/Mes/Año" && maxDate != "Dia/Mes/Año") {
             val simpleDateFormat = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
-            var minDateDate: Date? = null
-            var maxDateDate: Date? = null
+            var minDateLocal: Date? = null
+            var maxDateLocal: Date? = null
 
             try {
-                minDateDate = simpleDateFormat.parse(minDate)
-                maxDateDate = simpleDateFormat.parse(maxDate)
+                minDateLocal = simpleDateFormat.parse(minDate)
+                maxDateLocal = simpleDateFormat.parse(maxDate)
             } catch (e: ParseException) {
                 Log.d("Error1: ", "comprobarFiltroFechas: ParseException")
             }
@@ -163,7 +200,7 @@ class MainActivity : AppCompatActivity() {
                 } catch (e: ParseException) {
                     Log.d("Error2: ", "comprobarFiltroFechas: ParseException")
                 }
-                if (invoiceDate.after(minDateDate) && invoiceDate.before(maxDateDate)) {
+                if (invoiceDate.after(minDateLocal) && invoiceDate.before(maxDateLocal)) {
                     filteredInvoices.add(invoice)
                 }
             }

@@ -12,7 +12,11 @@ import android.widget.SeekBar
 import com.example.listafacturaspractica.R
 import com.example.listafacturaspractica.databinding.ActivityFilterBinding
 import com.google.gson.Gson
+import java.text.ParseException
+import java.text.SimpleDateFormat
 import java.util.Calendar
+import java.util.Date
+import java.util.Locale
 
 /**
  * Clase que representa la Activity de Filtros.
@@ -24,6 +28,7 @@ class FilterActivity : AppCompatActivity() {
      */
     private lateinit var binding: ActivityFilterBinding
     private var filter: Filter? = null
+    private var maxAmount: Int = 0
     private lateinit var paid: CheckBox
     private lateinit var canceled: CheckBox
     private lateinit var fixedPayment: CheckBox
@@ -62,22 +67,36 @@ class FilterActivity : AppCompatActivity() {
                 "PAGADAS_STRING" to paid.isChecked,
                 "ANULADAS_STRING" to canceled.isChecked,
                 "CUOTA_FIJA_STRING" to fixedPayment.isChecked,
-                "PENDIENTE_PAGO_STRING" to pendingPayment.isChecked,
+                "PENDIENTES_PAGO_STRING" to pendingPayment.isChecked,
                 "PLAN_PAGO_STRING" to paymentPlan.isChecked
             )
-
 
             val minDate = binding.fechaDesde.text.toString()
             val maxDate = binding.fechaHasta.text.toString()
             Log.d("CHECK", state.toString())
             Log.d("MAX", maxValueSlider.toString())
-            Log.d("MINDATE", minDate.toString())
-            Log.d("MAXDATE", maxDate.toString())
+            Log.d("MINDATE", minDate)
+            Log.d("MAXDATE", maxDate)
             val filter: com.example.listafacturaspractica.ui.view.Filter = Filter(maxDate, minDate, maxValueSlider, state)
-            val miIntent = Intent(this, MainActivity::class.java)
-            miIntent.putExtra("FILTRO_ENVIAR_RECIBIR_DATOS", gson.toJson(filter))
-            startActivity(miIntent)
+            if (!minDate.equals("Dia/Mes/Año") && !maxDate.equals("Dia/Mes/Año")) {
+                val miIntent = Intent(this, MainActivity::class.java)
+                miIntent.putExtra("FILTRO_ENVIAR_RECIBIR_DATOS", gson.toJson(filter))
+                startActivity(miIntent)
+            } else {
+                noDatePopUp()
+            }
         }
+
+        binding.eliminar.setOnClickListener {
+            resetFilters()
+        }
+    }
+
+    private fun noDatePopUp() {
+        val fragmentManager = supportFragmentManager // Reemplaza con el FragmentManager adecuado
+        val customPopupFragment =
+            FragmentPopUp("Debe elegir entre qué fechas quiere filtrar las facturas.")
+        customPopupFragment.show(fragmentManager, "FragmentPopUp")
     }
 
     private fun applySavedFilters() {
@@ -138,17 +157,27 @@ class FilterActivity : AppCompatActivity() {
                 month,
                 day
             )
+            val simpleDateFormat = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
+            val minDateLocal = binding.fechaDesde.text.toString()
+            val minDate: Date
+            try {
+                minDate = simpleDateFormat.parse(minDateLocal)
+                datePickerDialog.datePicker.minDate = minDate.time
+            } catch (e: ParseException) {
+                e.printStackTrace()
+            }
+
             datePickerDialog.show()
         }
     }
 
     private fun initSeekBar() {
         //Declaración SeekBar.
-        var maxAmount = intent.getDoubleExtra("MAX_IMPORTE", 0.0).toInt() + 1
+        maxAmount = intent.getDoubleExtra("MAX_IMPORTE", 0.0).toInt() + 1
         binding.seekBar.max = maxAmount
         binding.tvMaxSeekbar.text = "${maxAmount}€"
         binding.tvMinSeekbar.text = "0€"
-        binding.valorSeekBar.text = "${maxAmount}€"
+        binding.valorSeekBar.text = "${maxAmount}"
         binding.seekBar.progress = maxAmount
 
 
@@ -215,7 +244,7 @@ class FilterActivity : AppCompatActivity() {
             "PAGADAS_STRING" to paid.isChecked,
             "ANULADAS_STRING" to canceled.isChecked,
             "CUOTA_FIJA_STRING" to fixedPayment.isChecked,
-            "PENDIENTE_PAGO_STRING" to pendingPayment.isChecked,
+            "PENDIENTES_PAGO_STRING" to pendingPayment.isChecked,
             "PLAN_PAGO_STRING" to paymentPlan.isChecked
         )
         val minDate = binding.fechaDesde.text.toString()
@@ -225,4 +254,18 @@ class FilterActivity : AppCompatActivity() {
         // Guarda el estado de los filtros en las preferencias compartidas
         saveFilterState(filter!!)
     }
+
+    private fun resetFilters() {
+        maxAmount = intent.getDoubleExtra("MAX_IMPORTE", 0.0).toInt() + 1
+        binding.fechaDesde.text = getString(R.string.botonDesde)
+        binding.fechaHasta.text = getString(R.string.botonHasta)
+        binding.seekBar.progress = maxAmount
+        binding.cbPagadas.isChecked = false
+        binding.cbAnuladas.isChecked = false
+        binding.cbCuotaFija.isChecked = false
+        binding.cbPendientesPago.isChecked = false
+        binding.cbPlanPago.isChecked = false
+
+    }
+
 }
