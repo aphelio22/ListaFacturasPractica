@@ -100,26 +100,7 @@ class FilterActivity : AppCompatActivity() {
         customPopupFragment.show(fragmentManager, "FragmentPopUp")
     }
 
-    private fun applySavedFilters() {
-        val prefs = getPreferences(MODE_PRIVATE)
-        val filterJson = prefs.getString("FILTER_STATE", null)
 
-        if (filterJson != null) {
-            val gson = Gson()
-            filter = gson.fromJson(filterJson, Filter::class.java)
-            filter?.let { nonNullFilter ->
-                loadFilters(nonNullFilter)
-            }
-        }
-    }
-
-    private fun saveFilterState(filter: Filter) {
-        val prefs = getPreferences(MODE_PRIVATE)
-        val gson = Gson()
-        val filterJson = gson.toJson(filter)
-
-        prefs.edit().putString("FILTER_STATE", filterJson).apply()
-    }
 
     private fun initCalendar() {
         //Declaración de los botones fechaDesde / fechaHasta.
@@ -226,6 +207,27 @@ class FilterActivity : AppCompatActivity() {
                 else -> super.onOptionsItemSelected(item)
             }
         }
+
+    private fun applySavedFilters() {
+        val prefs = getPreferences(MODE_PRIVATE)
+        val filterJson = prefs.getString(Constants.FILTER_STATE, null)
+
+        if (filterJson != null) {
+            val gson = Gson()
+            filter = gson.fromJson(filterJson, Filter::class.java)
+            filter?.let { nonNullFilter ->
+                loadFilters(nonNullFilter)
+            }
+        }
+    }
+
+    private fun saveFilterState(filter: Filter) {
+        val prefs = getPreferences(MODE_PRIVATE)
+        val gson = Gson()
+        val filterJson = gson.toJson(filter)
+
+        prefs.edit().putString(Constants.FILTER_STATE, filterJson).apply()
+    }
 
     private fun loadFilters(filter: Filter) {
         binding.fechaDesde.text = filter.minDate
