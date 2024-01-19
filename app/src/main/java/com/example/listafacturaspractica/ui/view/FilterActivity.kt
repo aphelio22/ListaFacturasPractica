@@ -51,7 +51,7 @@ class FilterActivity : AppCompatActivity() {
         initCheckBoxes()
         applySavedFilters()
         // Intenta cargar los filtros iniciales si existen
-        val filtroJson = intent.getStringExtra("FILTRO_ENVIAR_RECIBIR_DATOS")
+        val filtroJson = intent.getStringExtra(Constants.SEND_RECEIVE_FILTERS)
         if (filtroJson != null) {
             filter = Gson().fromJson(filtroJson, Filter::class.java)
             filter?.let { nonNullFilter ->
@@ -81,7 +81,7 @@ class FilterActivity : AppCompatActivity() {
             val filter: com.example.listafacturaspractica.ui.view.Filter = Filter(maxDate, minDate, maxValueSlider, state)
             if (!minDate.equals("Dia/Mes/Año") && !maxDate.equals("Dia/Mes/Año")) {
                 val miIntent = Intent(this, MainActivity::class.java)
-                miIntent.putExtra("FILTRO_ENVIAR_RECIBIR_DATOS", gson.toJson(filter))
+                miIntent.putExtra(Constants.SEND_RECEIVE_FILTERS, gson.toJson(filter))
                 startActivity(miIntent)
             } else {
                 noDatePopUp()

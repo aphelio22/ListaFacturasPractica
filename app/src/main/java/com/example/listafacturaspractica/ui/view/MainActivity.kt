@@ -108,7 +108,7 @@ class MainActivity : AppCompatActivity() {
 
             /* Recibe la selección de datos que se ha hecho en los componentes de FilterActivity como un objeto
             *  y los utiliza para filtrar la lista de facturas.*/
-            val filtroJson = intent.getStringExtra("FILTRO_ENVIAR_RECIBIR_DATOS")
+            val filtroJson = intent.getStringExtra(Constants.SEND_RECEIVE_FILTERS)
             if (filtroJson != null) {
                 filter = Gson().fromJson(filtroJson, Filter::class.java)
 
@@ -149,7 +149,7 @@ class MainActivity : AppCompatActivity() {
                 val miIntent = Intent(this, FilterActivity::class.java)
                 miIntent.putExtra("MAX_IMPORTE", maxAmount)
                 if (filter != null) {
-                    miIntent.putExtra("FILTRO_ENVIAR_RECIBIR_DATOS", gson.toJson(filter))
+                    miIntent.putExtra(Constants.SEND_RECEIVE_FILTERS, gson.toJson(filter))
                 }
                 startActivity(miIntent)
                 true
