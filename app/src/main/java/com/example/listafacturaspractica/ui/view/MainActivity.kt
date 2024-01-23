@@ -7,6 +7,7 @@ import android.os.Bundle
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
+import android.view.View
 import androidx.activity.viewModels
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -145,6 +146,11 @@ class MainActivity : AppCompatActivity() {
 
                 //Se gusarda la lista en SharedPreferences.
                 saveFilteredListToSharedPreferences(invoiceList)
+
+                //Si la lista está vacía se hace visible 'tvEmptyList'.
+                if (invoiceList.isEmpty()) {
+                    binding.tvEmptyList.visibility = View.VISIBLE
+                }
 
                 //Se le pasa al adaptador la lista filtrada.
                 invoiceAdapter.setListInvoices(invoiceList)

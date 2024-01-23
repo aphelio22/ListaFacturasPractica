@@ -19,4 +19,5 @@
     <string name="euro">€</string>
     <string name="informacion">INFORMACIÓN</string>
     <string name="funcionalidad_no_disponible">Esta funcionalidad aún no está disponible.</string>
+    <string name="emptyListText">Aquí no hay nada.</string>
 </resources>
