@@ -72,7 +72,7 @@ class FilterActivity : AppCompatActivity() {
                 Constants.PAYMENT_PLAN_STRING to paymentPlan.isChecked
             )
 
-            val minDate = binding.fechaDesde.text.toString()
+            val minDate = binding.minDate.text.toString()
             val maxDate = binding.fechaHasta.text.toString()
             Log.d("CHECK", state.toString())
             Log.d("MAX", maxValueSlider.toString())
@@ -105,7 +105,7 @@ class FilterActivity : AppCompatActivity() {
     private fun initCalendar() {
         //Declaración de los botones fechaDesde / fechaHasta.
         //Declaración de fechaDesde.
-        binding.fechaDesde.setOnClickListener {
+        binding.minDate.setOnClickListener {
             val c = Calendar.getInstance()
             val year = c.get(Calendar.YEAR)
             val month = c.get(Calendar.MONTH)
@@ -114,7 +114,7 @@ class FilterActivity : AppCompatActivity() {
             val datePickerDialog = DatePickerDialog(
                 this,
                 DatePickerDialog.OnDateSetListener { view, year1, monthOfYear, dayOfMonth ->
-                    binding.fechaDesde.text = "$dayOfMonth/${monthOfYear + 1}/$year1"
+                    binding.minDate.text = "$dayOfMonth/${monthOfYear + 1}/$year1"
                 },
                 year,
                 month,
@@ -140,7 +140,7 @@ class FilterActivity : AppCompatActivity() {
                 day
             )
             val simpleDateFormat = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
-            val minDateLocal = binding.fechaDesde.text.toString()
+            val minDateLocal = binding.minDate.text.toString()
             val minDate: Date
             try {
                 minDate = simpleDateFormat.parse(minDateLocal)
@@ -230,7 +230,7 @@ class FilterActivity : AppCompatActivity() {
     }
 
     private fun loadFilters(filter: Filter) {
-        binding.fechaDesde.text = filter.minDate
+        binding.minDate.text = filter.minDate
         binding.fechaHasta.text = filter.maxDate
         binding.seekBar.progress = filter.maxValueSlider.toInt()
         binding.cbPagadas.isChecked = filter.estate[Constants.PAID_STRING] ?: false
@@ -250,7 +250,7 @@ class FilterActivity : AppCompatActivity() {
             Constants.PENDING_PAYMENT_STRING to pendingPayment.isChecked,
             Constants.PAYMENT_PLAN_STRING to paymentPlan.isChecked
         )
-        val minDate = binding.fechaDesde.text.toString()
+        val minDate = binding.minDate.text.toString()
         val maxDate = binding.fechaHasta.text.toString()
         filter = Filter(maxDate, minDate, maxValueSlider, state)
 
@@ -260,7 +260,7 @@ class FilterActivity : AppCompatActivity() {
 
     private fun resetFilters() {
         maxAmount = intent.getDoubleExtra(Constants.MAX_AMOUNT, 0.0).toInt() + 1
-        binding.fechaDesde.text = getString(R.string.botonDesde)
+        binding.minDate.text = getString(R.string.botonDesde)
         binding.fechaHasta.text = getString(R.string.botonHasta)
         binding.seekBar.progress = maxAmount
         binding.cbPagadas.isChecked = false

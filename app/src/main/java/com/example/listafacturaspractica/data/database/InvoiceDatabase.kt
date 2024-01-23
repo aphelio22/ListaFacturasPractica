@@ -22,7 +22,7 @@ abstract class InvoiceDatabase: RoomDatabase() {
         private var DB_INSTANCE: InvoiceDatabase? = null
 
         /**
-         * Méttodo que crea una instancia de la Base de Datos de facturas utilizando
+         * Método que crea una instancia de la Base de Datos de facturas utilizando
          * la variable 'DB_INSTANCE'.
          *
          * @param context Contexto de la aplicación.
