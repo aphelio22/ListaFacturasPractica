@@ -19,5 +19,5 @@
     <string name="emptyListText">Aquí no hay nada.</string>
     <string name="notImplementedYet">Esta función aún no ha sido implementada</string>
     <string name="dayMonthYear">Dia/Mes/Año</string>
-    <string name="tvSeekBarProgress">31</string>
+    <string name="SeekBarProgress">31</string>
 </resources>
