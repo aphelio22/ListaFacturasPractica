@@ -156,7 +156,7 @@ class MainActivity : AppCompatActivity() {
                 invoiceAdapter.setListInvoices(invoiceList)
             }
         } else { //Se maneja el caso en el que 'filtroJson' sea null.
-            Log.e("MainActivity", "El valor de FILTRO_ENVIAR_RECIBIR_DATOS es null")
+            Log.e("MainActivity", "El valor de ${Constants.SEND_RECEIVE_FILTERS} es null")
         }
     }
 
@@ -188,7 +188,7 @@ class MainActivity : AppCompatActivity() {
     //Método por el cual se carga el PopUp cuando se pulsa sobre un elemento de la lista.
     private fun onItemSelected(invoice: Invoice) {
         val fragmentManager = supportFragmentManager
-        val customPopupFragment = FragmentPopUp("Esta función aún no ha sido implementada")
+        val customPopupFragment = FragmentPopUp(getString(R.string.notImplementedYet))
         customPopupFragment.show(fragmentManager, "FragmentPopUp")
     }
 
@@ -224,7 +224,7 @@ class MainActivity : AppCompatActivity() {
         invoiceList: List<Invoice>
     ): List<Invoice> {
         val filteredInvoices = ArrayList<Invoice>()
-        if (minDate != "Dia/Mes/Año" && maxDate != "Dia/Mes/Año") {
+        if (minDate != getString(R.string.dayMonthYear) && maxDate != getString(R.string.dayMonthYear)) {
             val simpleDateFormat = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
 
             //Variables locales del método en las que se almacenan la fecha mínima y la fecha máxima parseadas.

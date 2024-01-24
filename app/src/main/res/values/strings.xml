@@ -3,8 +3,6 @@
     <string name="fechaDeEmision">Por fecha de emisión:</string>
     <string name="tvDesde">Desde:</string>
     <string name="tvHasta">Hasta:</string>
-    <string name="botonDesde">Dia/Mes/Año</string>
-    <string name="botonHasta">Dia/Mes/Año</string>
     <string name="porImporte">Por importe:</string>
     <string name="tvImporteMinimo">0</string>
     <string name="tvImporteMaximo">62</string>
@@ -20,4 +18,6 @@
     <string name="informacion">INFORMACIÓN</string>
     <string name="funcionalidad_no_disponible">Esta funcionalidad aún no está disponible.</string>
     <string name="emptyListText">Aquí no hay nada.</string>
+    <string name="notImplementedYet">Esta función aún no ha sido implementada</string>
+    <string name="dayMonthYear">Dia/Mes/Año</string>
 </resources>
