@@ -1,12 +1,12 @@
 <resources>
     <string name="app_name">Facturas</string>
-    <string name="fechaDeEmision">Por fecha de emisión:</string>
-    <string name="tvDesde">Desde:</string>
-    <string name="tvHasta">Hasta:</string>
-    <string name="porImporte">Por importe:</string>
-    <string name="tvImporteMinimo">0</string>
-    <string name="tvImporteMaximo">62</string>
-    <string name="porEstado">Por estado:</string>
+    <string name="issueDateTitle">Por fecha de emisión:</string>
+    <string name="sinceTitle">Desde:</string>
+    <string name="untilTitle">Hasta:</string>
+    <string name="amountTitle">Por importe:</string>
+    <string name="minAmount">0</string>
+    <string name="maxAmount">62</string>
+    <string name="stateTitle">Por estado:</string>
     <string name="paid">Pagadas</string>
     <string name="canceled">Anuladas</string>
     <string name="fixedPayment">Cuota Fija</string>
