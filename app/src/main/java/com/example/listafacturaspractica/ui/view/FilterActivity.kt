@@ -25,86 +25,81 @@ import java.util.Locale
 class FilterActivity : AppCompatActivity() {
 
     /**
-     * Binding para la vista de la Activity.
+     * Binding para la vista de la activity.
      */
     private lateinit var binding: ActivityFilterBinding
+
+    /**
+     * Instancia de la clase Filter.
+     */
     private var filter: Filter? = null
+
+    /**
+     * Importe máximo de las facturas.
+     */
     private var maxAmount: Int = 0
+
+    /**
+     * CheckBox de facturas pagadas.
+     */
     private lateinit var paid: CheckBox
+
+    /**
+     * CheckBox de facturas canceladas.
+     */
     private lateinit var canceled: CheckBox
+
+    /**
+     * CheckBox de facturas con cuota fija.
+     */
     private lateinit var fixedPayment: CheckBox
+
+    /**
+     * CheckBox de facturas pendientes de pago.
+     */
     private lateinit var pendingPayment: CheckBox
+
+    /**
+     * CheckBox de facturas con plan de pago.
+     */
     private lateinit var paymentPlan: CheckBox
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityFilterBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        initComponents()
 
-        //Configura el título de la ToolBar.
+        //Configura el título de la ToolBar en 'Filtrar Facturas'.
         supportActionBar?.setTitle("Filtrar Facturas")
+
+        initComponents()
+        applySavedFilters()
+        loadFilterConfiguration()
     }
 
+    /**
+     * Inicializa los componentes de la interfaz de usuario.
+     */
     private fun initComponents() {
         initCalendar()
         initSeekBar()
         initCheckBoxes()
-        applySavedFilters()
-        // Intenta cargar los filtros iniciales si existen
-        val filtroJson = intent.getStringExtra(Constants.SEND_RECEIVE_FILTERS)
-        if (filtroJson != null) {
-            filter = Gson().fromJson(filtroJson, Filter::class.java)
-            filter?.let { nonNullFilter ->
-                loadFilters(nonNullFilter)
-            }
-        }
-        Log.d("FiltroJSON", filtroJson.toString())
-
-        binding.aplicar.setOnClickListener {
-            updateAndSaveFilters()
-            val gson = Gson()
-            val maxValueSlider = binding.valorSeekBar.text.toString().toDouble()
-            val state = hashMapOf(
-                Constants.PAID_STRING to paid.isChecked,
-                Constants.CANCELED_STRING to canceled.isChecked,
-                Constants.FIXED_PAYMENT_STRING to fixedPayment.isChecked,
-                Constants.PENDING_PAYMENT_STRING to pendingPayment.isChecked,
-                Constants.PAYMENT_PLAN_STRING to paymentPlan.isChecked
-            )
-
-            val minDate = binding.minDate.text.toString()
-            val maxDate = binding.fechaHasta.text.toString()
-            Log.d("CHECK", state.toString())
-            Log.d("MAX", maxValueSlider.toString())
-            Log.d("MINDATE", minDate)
-            Log.d("MAXDATE", maxDate)
-            val filter: com.example.listafacturaspractica.ui.view.Filter = Filter(maxDate, minDate, maxValueSlider, state)
-            if (!minDate.equals("Dia/Mes/Año") && !maxDate.equals("Dia/Mes/Año")) {
-                val miIntent = Intent(this, MainActivity::class.java)
-                miIntent.putExtra(Constants.SEND_RECEIVE_FILTERS, gson.toJson(filter))
-                startActivity(miIntent)
-            } else {
-                noDatePopUp()
-            }
-        }
-
-        binding.eliminar.setOnClickListener {
-            resetFilters()
-        }
+        initApplyFiltersButton()
+        initResetFilterButton()
     }
 
-    private fun noDatePopUp() {
-        val fragmentManager = supportFragmentManager // Reemplaza con el FragmentManager adecuado
-        val customPopupFragment =
-            FragmentPopUp("Debe elegir entre qué fechas quiere filtrar las facturas.")
-        customPopupFragment.show(fragmentManager, "FragmentPopUp")
-    }
-
-
-
+    /**
+     * Inicializa el calendario con los botones de fecha mínima y fecha máxima.
+     */
     private fun initCalendar() {
-        //Declaración de los botones fechaDesde / fechaHasta.
-        //Declaración de fechaDesde.
+        //Inicialización de los botones fechaDesde / fechaHasta.
+        initMinDateButton()
+        initMaxDateButton()
+    }
+
+    /**
+     * Inicializa el botón de fecha mínima.
+     */
+    private fun initMinDateButton() {
         binding.minDate.setOnClickListener {
             val c = Calendar.getInstance()
             val year = c.get(Calendar.YEAR)
@@ -122,8 +117,12 @@ class FilterActivity : AppCompatActivity() {
             )
             datePickerDialog.show()
         }
+    }
 
-        //Declaración de fechaHasta.
+    /**
+     * Inicializa el botón de fecha máxima.
+     */
+    private fun initMaxDateButton() {
         binding.fechaHasta.setOnClickListener {
             val c = Calendar.getInstance()
             val year = c.get(Calendar.YEAR)
@@ -153,6 +152,9 @@ class FilterActivity : AppCompatActivity() {
         }
     }
 
+    /**
+     * Inicializa la SeekBar.
+     */
     private fun initSeekBar() {
         //Declaración SeekBar.
         maxAmount = intent.getDoubleExtra(Constants.MAX_AMOUNT, 0.0).toInt() + 1
@@ -189,7 +191,71 @@ class FilterActivity : AppCompatActivity() {
         paymentPlan = binding.cbPlanPago
     }
 
-    //Método propio para la creación de un menú.
+    private fun initResetFilterButton() {
+        binding.eliminar.setOnClickListener {
+            resetFilters()
+        }
+    }
+
+    private fun applySavedFilters() {
+        val prefs = getPreferences(MODE_PRIVATE)
+        val filterJson = prefs.getString(Constants.FILTER_STATE, null)
+
+        if (filterJson != null) {
+            val gson = Gson()
+            filter = gson.fromJson(filterJson, Filter::class.java)
+            filter?.let { nonNullFilter ->
+                loadFilters(nonNullFilter)
+            }
+        }
+    }
+
+    private fun loadFilterConfiguration() {
+        val filtroJson = intent.getStringExtra(Constants.SEND_RECEIVE_FILTERS)
+        if (filtroJson != null) {
+            filter = Gson().fromJson(filtroJson, Filter::class.java)
+            filter?.let { nonNullFilter ->
+                loadFilters(nonNullFilter)
+            }
+        }
+    }
+
+    private fun initApplyFiltersButton() {
+        binding.aplicar.setOnClickListener {
+            updateAndSaveFilters()
+            val gson = Gson()
+            val maxValueSlider = binding.valorSeekBar.text.toString().toDouble()
+            val state = hashMapOf(
+                Constants.PAID_STRING to paid.isChecked,
+                Constants.CANCELED_STRING to canceled.isChecked,
+                Constants.FIXED_PAYMENT_STRING to fixedPayment.isChecked,
+                Constants.PENDING_PAYMENT_STRING to pendingPayment.isChecked,
+                Constants.PAYMENT_PLAN_STRING to paymentPlan.isChecked
+            )
+
+            val minDate = binding.minDate.text.toString()
+            val maxDate = binding.fechaHasta.text.toString()
+            val filter: Filter = Filter(maxDate, minDate, maxValueSlider, state)
+            if (!minDate.equals("Dia/Mes/Año") && !maxDate.equals("Dia/Mes/Año")) {
+                val miIntent = Intent(this, MainActivity::class.java)
+                miIntent.putExtra(Constants.SEND_RECEIVE_FILTERS, gson.toJson(filter))
+                startActivity(miIntent)
+            } else {
+                noDatePopUp()
+            }
+        }
+    }
+
+
+
+    private fun noDatePopUp() {
+        val fragmentManager = supportFragmentManager // Reemplaza con el FragmentManager adecuado
+        val customPopupFragment =
+            FragmentPopUp("Debe elegir entre qué fechas quiere filtrar las facturas.")
+        customPopupFragment.show(fragmentManager, "FragmentPopUp")
+    }
+
+        //Método propio para la creación de un menú.
         override fun onCreateOptionsMenu(menu: Menu?): Boolean {
             menuInflater.inflate(R.menu.menu_filter_activity, menu)
             return true
@@ -208,18 +274,7 @@ class FilterActivity : AppCompatActivity() {
             }
         }
 
-    private fun applySavedFilters() {
-        val prefs = getPreferences(MODE_PRIVATE)
-        val filterJson = prefs.getString(Constants.FILTER_STATE, null)
 
-        if (filterJson != null) {
-            val gson = Gson()
-            filter = gson.fromJson(filterJson, Filter::class.java)
-            filter?.let { nonNullFilter ->
-                loadFilters(nonNullFilter)
-            }
-        }
-    }
 
     private fun saveFilterState(filter: Filter) {
         val prefs = getPreferences(MODE_PRIVATE)
