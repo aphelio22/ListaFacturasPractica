@@ -7,11 +7,11 @@
     <string name="tvImporteMinimo">0</string>
     <string name="tvImporteMaximo">62</string>
     <string name="porEstado">Por estado:</string>
-    <string name="cbPagadas">Pagadas</string>
-    <string name="cbAnuladas">Anuladas</string>
-    <string name="cbCuotaFija">Cuota Fija</string>
-    <string name="cbPendientesPago">Pendientes de pago</string>
-    <string name="cbPlanPago">Plan de Pago</string>
+    <string name="paid">Pagadas</string>
+    <string name="canceled">Anuladas</string>
+    <string name="fixedPayment">Cuota Fija</string>
+    <string name="pendingPayment">Pendientes de pago</string>
+    <string name="paymentPlan">Plan de Pago</string>
     <string name="applyFilters">Aplicar filtros</string>
     <string name="deleteFilters">Borrar filtros</string>
     <string name="euro">€</string>

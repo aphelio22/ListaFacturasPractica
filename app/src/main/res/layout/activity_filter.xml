@@ -177,7 +177,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="7dp"
-                android:text="@string/cbPagadas"
+                android:text="@string/paid"
                 android:textSize="20sp"
                 app:layout_constraintStart_toStartOf="@+id/tvEstadoTitulo"
                 app:layout_constraintTop_toBottomOf="@+id/tvEstadoTitulo" />
@@ -187,7 +187,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="3dp"
-                android:text="@string/cbAnuladas"
+                android:text="@string/canceled"
                 android:textSize="20sp"
                 app:layout_constraintStart_toStartOf="@+id/cbPagadas"
                 app:layout_constraintTop_toBottomOf="@+id/cbPagadas" />
@@ -197,7 +197,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="5dp"
-                android:text="@string/cbCuotaFija"
+                android:text="@string/fixedPayment"
                 android:textSize="20sp"
                 app:layout_constraintStart_toStartOf="@+id/cbAnuladas"
                 app:layout_constraintTop_toBottomOf="@+id/cbAnuladas" />
@@ -207,7 +207,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="5dp"
-                android:text="@string/cbPendientesPago"
+                android:text="@string/pendingPayment"
                 android:textSize="20sp"
                 app:layout_constraintStart_toStartOf="@+id/cbCuotaFija"
                 app:layout_constraintTop_toBottomOf="@+id/cbCuotaFija" />
@@ -217,7 +217,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="5dp"
-                android:text="@string/cbPlanPago"
+                android:text="@string/paymentPlan"
                 android:textSize="20sp"
                 app:layout_constraintStart_toStartOf="@+id/cbPendientesPago"
                 app:layout_constraintTop_toBottomOf="@+id/cbPendientesPago" />
