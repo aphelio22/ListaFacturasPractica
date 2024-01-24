@@ -329,8 +329,8 @@ class FilterActivity : AppCompatActivity() {
      */
     private fun resetFilters() {
         maxAmount = intent.getDoubleExtra(Constants.MAX_AMOUNT, 0.0).toInt() + 1
-        binding.minDate.text = getString(R.string.botonDesde)
-        binding.fechaHasta.text = getString(R.string.botonHasta)
+        binding.minDate.text = getString(R.string.dayMonthYear)
+        binding.fechaHasta.text = getString(R.string.dayMonthYear)
         binding.seekBar.progress = maxAmount
         binding.cbPagadas.isChecked = false
         binding.cbAnuladas.isChecked = false
