@@ -73,7 +73,6 @@ class FilterActivity : AppCompatActivity() {
 
         initComponents()
         applySavedFilters()
-        loadFilterConfiguration()
     }
 
     /**
@@ -91,7 +90,6 @@ class FilterActivity : AppCompatActivity() {
      * Inicializa el calendario con los botones de fecha mínima y fecha máxima.
      */
     private fun initCalendar() {
-        //Inicialización de los botones fechaDesde / fechaHasta.
         initMinDateButton()
         initMaxDateButton()
     }
@@ -147,7 +145,6 @@ class FilterActivity : AppCompatActivity() {
             } catch (e: ParseException) {
                 e.printStackTrace()
             }
-
             datePickerDialog.show()
         }
     }
@@ -159,8 +156,8 @@ class FilterActivity : AppCompatActivity() {
         //Declaración SeekBar.
         maxAmount = intent.getDoubleExtra(Constants.MAX_AMOUNT, 0.0).toInt() + 1
         binding.seekBar.max = maxAmount
-        binding.tvMaxSeekbar.text = "${maxAmount}€"
-        binding.tvMinSeekbar.text = "0€"
+        binding.tvMaxSeekbar.text = "${maxAmount}"
+        binding.tvMinSeekbar.text = "0"
         binding.valorSeekBar.text = "${maxAmount}"
         binding.seekBar.progress = maxAmount
 
@@ -183,6 +180,9 @@ class FilterActivity : AppCompatActivity() {
         })
     }
 
+    /**
+     * Inicializa los CheckBoxes.
+     */
     private fun initCheckBoxes() {
         paid = binding.cbPagadas
         canceled = binding.cbAnuladas
@@ -191,12 +191,19 @@ class FilterActivity : AppCompatActivity() {
         paymentPlan = binding.cbPlanPago
     }
 
+    /**
+     * Iniciliza el botón de resetear filtros.
+     */
     private fun initResetFilterButton() {
         binding.eliminar.setOnClickListener {
             resetFilters()
         }
     }
 
+    /**
+     * Coge los filtros guardados que se cargan desde 'loadFilters()' y los aplica a los
+     * filtros que recibe desde MainActivity.
+     */
     private fun applySavedFilters() {
         val prefs = getPreferences(MODE_PRIVATE)
         val filterJson = prefs.getString(Constants.FILTER_STATE, null)
@@ -210,21 +217,61 @@ class FilterActivity : AppCompatActivity() {
         }
     }
 
-    private fun loadFilterConfiguration() {
-        val filtroJson = intent.getStringExtra(Constants.SEND_RECEIVE_FILTERS)
-        if (filtroJson != null) {
-            filter = Gson().fromJson(filtroJson, Filter::class.java)
-            filter?.let { nonNullFilter ->
-                loadFilters(nonNullFilter)
-            }
-        }
+    /**
+     * Guarda el estado de los filtros.
+     */
+    private fun saveFilterState(filter: Filter) {
+        val prefs = getPreferences(MODE_PRIVATE)
+        val gson = Gson()
+        val filterJson = gson.toJson(filter)
+
+        prefs.edit().putString(Constants.FILTER_STATE, filterJson).apply()
     }
 
+    /**
+     * Carga los filtros guardados.
+     */
+    private fun loadFilters(filter: Filter) {
+        binding.minDate.text = filter.minDate
+        binding.fechaHasta.text = filter.maxDate
+        binding.seekBar.progress = filter.maxValueSlider.toInt()
+        binding.cbPagadas.isChecked = filter.estate[Constants.PAID_STRING] ?: false
+        binding.cbAnuladas.isChecked = filter.estate[Constants.CANCELED_STRING] ?: false
+        binding.cbCuotaFija.isChecked = filter.estate[Constants.FIXED_PAYMENT_STRING] ?: false
+        binding.cbPendientesPago.isChecked = filter.estate[Constants.PENDING_PAYMENT_STRING] ?: false
+        binding.cbPlanPago.isChecked = filter.estate[Constants.PAYMENT_PLAN_STRING] ?: false
+    }
+
+    /**
+     * Actualiza y guarda el estado de los filtros usando el método 'saveFilterState()'.
+     */
+    private fun updateAndSaveFilters() {
+        //Actualiza los filtros.
+        val maxValueSlider = binding.valorSeekBar.text.toString().toDouble()
+        val state = hashMapOf(
+            Constants.PAID_STRING to paid.isChecked,
+            Constants.CANCELED_STRING to canceled.isChecked,
+            Constants.FIXED_PAYMENT_STRING to fixedPayment.isChecked,
+            Constants.PENDING_PAYMENT_STRING to pendingPayment.isChecked,
+            Constants.PAYMENT_PLAN_STRING to paymentPlan.isChecked
+        )
+        val minDate = binding.minDate.text.toString()
+        val maxDate = binding.fechaHasta.text.toString()
+        filter = Filter(maxDate, minDate, maxValueSlider, state)
+
+        //Guarda el estado de los filtros en las preferencias compartidas.
+        saveFilterState(filter!!)
+    }
+
+    /**
+     * Inicializa el botón para aplicar los filtros.
+     */
     private fun initApplyFiltersButton() {
         binding.aplicar.setOnClickListener {
             updateAndSaveFilters()
             val gson = Gson()
             val maxValueSlider = binding.valorSeekBar.text.toString().toDouble()
+
             val state = hashMapOf(
                 Constants.PAID_STRING to paid.isChecked,
                 Constants.CANCELED_STRING to canceled.isChecked,
@@ -235,19 +282,22 @@ class FilterActivity : AppCompatActivity() {
 
             val minDate = binding.minDate.text.toString()
             val maxDate = binding.fechaHasta.text.toString()
+
             val filter: Filter = Filter(maxDate, minDate, maxValueSlider, state)
+
             if (!minDate.equals("Dia/Mes/Año") && !maxDate.equals("Dia/Mes/Año")) {
                 val miIntent = Intent(this, MainActivity::class.java)
                 miIntent.putExtra(Constants.SEND_RECEIVE_FILTERS, gson.toJson(filter))
                 startActivity(miIntent)
-            } else {
+            } else { //Si alguna de las dos fechas, o las dos, no equivale a "Dia/Mes/Año" se realiza el intent, sino salta el PopUp.
                 noDatePopUp()
             }
         }
     }
 
-
-
+    /**
+     * Llama al PopUp pasándole un mensaje cuando no ha sido seleccionada alguna de las dos del intervalo o ninguna.
+     */
     private fun noDatePopUp() {
         val fragmentManager = supportFragmentManager // Reemplaza con el FragmentManager adecuado
         val customPopupFragment =
@@ -274,45 +324,9 @@ class FilterActivity : AppCompatActivity() {
             }
         }
 
-
-
-    private fun saveFilterState(filter: Filter) {
-        val prefs = getPreferences(MODE_PRIVATE)
-        val gson = Gson()
-        val filterJson = gson.toJson(filter)
-
-        prefs.edit().putString(Constants.FILTER_STATE, filterJson).apply()
-    }
-
-    private fun loadFilters(filter: Filter) {
-        binding.minDate.text = filter.minDate
-        binding.fechaHasta.text = filter.maxDate
-        binding.seekBar.progress = filter.maxValueSlider.toInt()
-        binding.cbPagadas.isChecked = filter.estate[Constants.PAID_STRING] ?: false
-        binding.cbAnuladas.isChecked = filter.estate[Constants.CANCELED_STRING] ?: false
-        binding.cbCuotaFija.isChecked = filter.estate[Constants.FIXED_PAYMENT_STRING] ?: false
-        binding.cbPendientesPago.isChecked = filter.estate[Constants.PENDING_PAYMENT_STRING] ?: false
-        binding.cbPlanPago.isChecked = filter.estate[Constants.PAYMENT_PLAN_STRING] ?: false
-    }
-
-    private fun updateAndSaveFilters() {
-        // Actualiza los filtros
-        val maxValueSlider = binding.valorSeekBar.text.toString().toDouble()
-        val state = hashMapOf(
-            Constants.PAID_STRING to paid.isChecked,
-            Constants.CANCELED_STRING to canceled.isChecked,
-            Constants.FIXED_PAYMENT_STRING to fixedPayment.isChecked,
-            Constants.PENDING_PAYMENT_STRING to pendingPayment.isChecked,
-            Constants.PAYMENT_PLAN_STRING to paymentPlan.isChecked
-        )
-        val minDate = binding.minDate.text.toString()
-        val maxDate = binding.fechaHasta.text.toString()
-        filter = Filter(maxDate, minDate, maxValueSlider, state)
-
-        // Guarda el estado de los filtros en las preferencias compartidas
-        saveFilterState(filter!!)
-    }
-
+    /**
+     * Método usado para resetear los filtros.
+     */
     private fun resetFilters() {
         maxAmount = intent.getDoubleExtra(Constants.MAX_AMOUNT, 0.0).toInt() + 1
         binding.minDate.text = getString(R.string.botonDesde)
@@ -325,5 +339,4 @@ class FilterActivity : AppCompatActivity() {
         binding.cbPlanPago.isChecked = false
 
     }
-
 }
