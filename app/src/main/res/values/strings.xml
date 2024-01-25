@@ -10,7 +10,7 @@
     <string name="paid">Pagadas</string>
     <string name="canceled">Anuladas</string>
     <string name="fixedPayment">Cuota Fija</string>
-    <string name="pendingPayment">Pendientes de pago</string>
+    <string name="pendingPayment">Pendiente de pago</string>
     <string name="paymentPlan">Plan de Pago</string>
     <string name="applyFilters">Aplicar filtros</string>
     <string name="deleteFilters">Borrar filtros</string>

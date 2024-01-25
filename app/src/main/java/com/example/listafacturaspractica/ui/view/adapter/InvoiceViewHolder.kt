@@ -29,10 +29,10 @@ class InvoiceViewHolder(view: View): ViewHolder(view) {
         * si no de verde.
         */
         if (binding.itemEstado.text.equals("Pendiente de pago")) {
-            val notPaiInvoice = ContextCompat.getColor(itemView.context, R.color.pendiente)
+            val notPaiInvoice = ContextCompat.getColor(itemView.context, R.color.pendingPaymentInvoice)
             binding.itemEstado.setTextColor(notPaiInvoice)
         } else{
-            val paidInvoice = ContextCompat.getColor(itemView.context, R.color.factura_pagada)
+            val paidInvoice = ContextCompat.getColor(itemView.context, R.color.paidInvoice)
             binding.itemEstado.setTextColor(paidInvoice)
         }
     }

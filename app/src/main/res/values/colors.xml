@@ -11,8 +11,8 @@
     <color name="baby_blue_eyes">#a1caf1</color>
     <color name="azure_web">#c9ffff</color>
     <color name="ball_blue">#21abcd</color>
-    <color name="pendiente">#D50000</color>
-    <color name="quitar">#a3c1ad</color>
-    <color name="titulos">#696969</color>
-    <color name="factura_pagada">#24DC33</color>
+    <color name="pendingPaymentInvoice">#D50000</color>
+    <color name="delete">#a3c1ad</color>
+    <color name="titles">#696969</color>
+    <color name="paidInvoice">#24DC33</color>
 </resources>

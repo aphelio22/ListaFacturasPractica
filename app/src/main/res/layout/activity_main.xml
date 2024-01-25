@@ -23,7 +23,7 @@
         android:textStyle="bold"
         android:textSize="24dp"
         android:visibility="gone"
-        android:textColor="@color/titulos"
+        android:textColor="@color/titles"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

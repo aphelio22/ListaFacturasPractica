@@ -62,7 +62,7 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="4dp"
             android:text="TextView"
-            android:textColor="@color/pendiente"
+            android:textColor="@color/pendingPaymentInvoice"
             android:textSize="24sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
