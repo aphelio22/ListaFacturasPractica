@@ -1,15 +1,16 @@
 package com.example.listafacturaspractica.ui.viewmodel
 
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.listafacturaspractica.data.database.Invoice
 import com.example.listafacturaspractica.data.repository.InvoiceRepository
+import com.example.listafacturaspractica.ui.view.Filter
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 
 @HiltViewModel
 class InvoiceViewModel @Inject constructor(private val invoiceRepository: InvoiceRepository): ViewModel() {
-    //Sigue siendo Room
     fun getAllRepositoryList(): LiveData<List<Invoice>> {
         return invoiceRepository.getAllInvoicesFromRoom()
     }
@@ -17,4 +18,5 @@ class InvoiceViewModel @Inject constructor(private val invoiceRepository: Invoic
     fun makeApiCall() {
         invoiceRepository.makeApiCall()
     }
+
 }

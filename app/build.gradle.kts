@@ -10,6 +10,10 @@ android {
     namespace = "com.example.listafacturaspractica"
     compileSdk = 34
 
+    buildFeatures {
+        buildConfig = true
+    }
+
     defaultConfig {
         applicationId = "com.example.listafacturaspractica"
         minSdk = 29
@@ -27,6 +31,9 @@ android {
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
+        }
+        debug {
+            buildConfigField("boolean", "USE_RETROMOCK", "true")
         }
     }
     compileOptions {
@@ -47,6 +54,9 @@ dependencies {
     implementation("androidx.appcompat:appcompat:1.6.1")
     implementation("com.google.android.material:material:1.11.0")
     implementation("androidx.constraintlayout:constraintlayout:2.1.4")
+    implementation("com.squareup.okhttp3:okhttp:4.9.1")
+    implementation("co.infinum:retromock:1.1.1")
+
 
     val room_version = "2.5.0"
     implementation("androidx.room:room-runtime:$room_version")

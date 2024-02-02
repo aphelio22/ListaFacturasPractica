@@ -9,6 +9,9 @@ import android.view.Menu
 import android.view.MenuItem
 import android.widget.CheckBox
 import android.widget.SeekBar
+import androidx.activity.result.ActivityResult
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
 import com.example.listafacturaspractica.R
 import com.example.listafacturaspractica.databinding.ActivityFilterBinding
 import com.example.listafacturaspractica.ui.view.constants.Constants
@@ -63,6 +66,8 @@ class FilterActivity : AppCompatActivity() {
      * CheckBox de facturas con plan de pago.
      */
     private lateinit var paymentPlan: CheckBox
+
+    private lateinit var intentLaunch: ActivityResultLauncher<Intent>
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityFilterBinding.inflate(layoutInflater)
@@ -73,6 +78,18 @@ class FilterActivity : AppCompatActivity() {
 
         initComponents()
         applySavedFilters()
+        intentLaunch =
+            registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result: ActivityResult ->
+                if (result.resultCode == RESULT_OK) {
+                    val maxImporte = result.data?.extras?.getDouble(Constants.MAX_AMOUNT) ?: 0.0
+                    val filtroJson = result.data?.extras?.getString(Constants.SEND_RECEIVE_FILTERS)
+                    if (filtroJson != null) {
+                        val gson = Gson()
+                        val objFiltro = gson.fromJson(filtroJson, Filter::class.java)
+                        // Hacer lo que sea necesario con objFiltro y maxImporte
+                    }
+                }
+            }
     }
 
     /**
@@ -211,6 +228,7 @@ class FilterActivity : AppCompatActivity() {
         if (filterJson != null) {
             val gson = Gson()
             filter = gson.fromJson(filterJson, Filter::class.java)
+            Log.d("FILTROS", filter.toString())
             filter?.let { nonNullFilter ->
                 loadFilters(nonNullFilter)
             }
@@ -283,12 +301,15 @@ class FilterActivity : AppCompatActivity() {
             val minDate = binding.minDate.text.toString()
             val maxDate = binding.fechaHasta.text.toString()
 
-            val filter: Filter = Filter(maxDate, minDate, maxValueSlider, state)
+
 
             if (!minDate.equals("Dia/Mes/Año") && !maxDate.equals("Dia/Mes/Año")) {
+                val filter: Filter = Filter(maxDate, minDate, maxValueSlider, state)
                 val miIntent = Intent(this, MainActivity::class.java)
                 miIntent.putExtra(Constants.SEND_RECEIVE_FILTERS, gson.toJson(filter))
-                startActivity(miIntent)
+                //setResult(RESULT_OK, miIntent)
+                intentLaunch.launch(miIntent)
+                finish()
             } else { //Si alguna de las dos fechas, o las dos, no equivale a "Dia/Mes/Año" se realiza el intent, sino salta el PopUp.
                 noDatePopUp()
             }

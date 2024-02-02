@@ -8,6 +8,9 @@ import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
+import androidx.activity.result.ActivityResult
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -54,6 +57,8 @@ class MainActivity : AppCompatActivity() {
      */
     private var maxAmount: Double = 0.0
 
+    private lateinit var intentLaunch: ActivityResultLauncher<Intent>
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -64,6 +69,18 @@ class MainActivity : AppCompatActivity() {
         supportActionBar?.setTitle("Facturas")
 
         initComponents()
+        intentLaunch =
+            registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result: ActivityResult ->
+                if (result.resultCode == RESULT_OK) {
+                    val maxImporte = result.data?.extras?.getDouble(Constants.MAX_AMOUNT) ?: 0.0
+                    val filtroJson = result.data?.extras?.getString(Constants.SEND_RECEIVE_FILTERS)
+                    if (filtroJson != null) {
+                        val gson = Gson()
+                        val objFiltro = gson.fromJson(filtroJson, Filter::class.java)
+                        // Hacer lo que sea necesario con objFiltro y maxImporte
+                    }
+                }
+            }
     }
 
     /**
@@ -178,7 +195,7 @@ class MainActivity : AppCompatActivity() {
                 if (filter != null) {
                     miIntent.putExtra(Constants.SEND_RECEIVE_FILTERS, gson.toJson(filter))
                 }
-                startActivity(miIntent)
+                intentLaunch.launch(miIntent)
                 true
             }
             else -> super.onOptionsItemSelected(item)
@@ -203,10 +220,10 @@ class MainActivity : AppCompatActivity() {
 
         for (invoice in invoiceList) {
             val actualInvoiceAmount = invoice.importeOrdenacion
-                if (maxAmount < actualInvoiceAmount!!) {
-                    maxAmount = actualInvoiceAmount
-                }
+            if (maxAmount < actualInvoiceAmount!!) {
+                maxAmount = actualInvoiceAmount
             }
+        }
         return maxAmount
     }
 
