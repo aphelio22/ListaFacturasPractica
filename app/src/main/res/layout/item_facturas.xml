@@ -1,23 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    app:cardCornerRadius="17dp"
-    android:layout_marginHorizontal="10dp"
-    android:layout_marginVertical="11dp"
-    app:cardElevation="5dp">
-
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/activity_horizontal_margin"
-        android:layout_marginTop="@dimen/activity_horizontal_margin"
-        android:layout_marginRight="@dimen/activity_horizontal_margin"
-        android:layout_marginBottom="@dimen/activity_horizontal_margin"
-        android:orientation="vertical">
-
+    android:layout_marginLeft="@dimen/activity_horizontal_margin"
+    android:layout_marginTop="@dimen/activity_horizontal_margin"
+    android:layout_marginRight="@dimen/activity_horizontal_margin"
+    android:layout_marginBottom="@dimen/activity_horizontal_margin"
+    android:orientation="vertical">
         <TextView
             android:id="@+id/item_fecha"
             android:layout_width="wrap_content"
@@ -37,7 +28,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="TextView"
-            android:textColor="@color/teal_200"
             android:textSize="34sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/dinero"
@@ -51,10 +41,10 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/euro"
-            android:textColor="@color/teal_200"
             android:textSize="34sp"
+            android:layout_marginEnd="8dp"
             app:layout_constraintBaseline_toBaselineOf="@+id/item_importe"
-            app:layout_constraintEnd_toEndOf="parent" />
+            app:layout_constraintEnd_toStartOf="@id/arrowInvoice" />
 
         <TextView
             android:id="@+id/item_estado"
@@ -62,11 +52,20 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="4dp"
             android:text="TextView"
+            android:visibility="invisible"
             android:textColor="@color/pendingPaymentInvoice"
             android:textSize="24sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="@+id/item_fecha" />
-    </androidx.constraintlayout.widget.ConstraintLayout>
-</androidx.cardview.widget.CardView>
+
+        <ImageView
+            android:id="@+id/arrowInvoice"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/arrow_invoices"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@id/dinero"
+            app:layout_constraintBottom_toBottomOf="@id/dinero"/>
+</androidx.constraintlayout.widget.ConstraintLayout>

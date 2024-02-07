@@ -8,12 +8,15 @@ import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
+import androidx.activity.OnBackPressedCallback
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.lifecycle.Observer
+import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.example.listafacturaspractica.R
 import com.example.listafacturaspractica.databinding.ActivityMainBinding
 import com.example.listafacturaspractica.data.database.Invoice
@@ -59,11 +62,19 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var intentLaunch: ActivityResultLauncher<Intent>
 
+    private val onBackInvokedCallback = object : OnBackPressedCallback(true){
+        override fun handleOnBackPressed() {
+            finishAffinity()
+        }
+    }
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        onBackPressedDispatcher.addCallback(this, onBackInvokedCallback)
 
         //Establece el título de la Toolbar en 'Facturas'.
         supportActionBar?.setTitle("Facturas")
@@ -82,6 +93,8 @@ class MainActivity : AppCompatActivity() {
                 }
             }
     }
+
+
 
     /**
      * Inicializa los componentes relacionados con la comunicación entre la interfaz de usuario
@@ -102,6 +115,8 @@ class MainActivity : AppCompatActivity() {
                 onItemSelected(invoice)
             }
             adapter = invoiceAdapter
+            val decoration = DividerItemDecoration(this@MainActivity, RecyclerView.VERTICAL)
+            binding.rvInvoices.addItemDecoration(decoration)
         }
     }
 

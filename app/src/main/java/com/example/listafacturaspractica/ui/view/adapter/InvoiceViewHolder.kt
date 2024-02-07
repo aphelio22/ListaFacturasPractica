@@ -6,6 +6,9 @@ import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import com.example.listafacturaspractica.R
 import com.example.listafacturaspractica.databinding.ItemFacturasBinding
 import com.example.listafacturaspractica.data.database.Invoice
+import java.text.ParseException
+import java.text.SimpleDateFormat
+import java.util.Locale
 
 /**
  * ViewHolder para la RecyclerView que representa un elemento de la lista de facturas.
@@ -16,11 +19,11 @@ class InvoiceViewHolder(view: View): ViewHolder(view) {
     val binding = ItemFacturasBinding.bind(view)
 
     //Método propio del ViewHolder del RecyclerView.
-    fun render(item: Invoice, onClickListener: (Invoice) -> Unit){
+    fun render(item: Invoice, onClickListener: (Invoice) -> Unit) {
         binding.itemEstado.text = item.descEstado
         binding.itemImporte.text = item.importeOrdenacion.toString()
-        binding.itemFecha.text = item.fecha
-        itemView.setOnClickListener{
+        binding.itemFecha.text = item.fecha?.let { formatDate(it) }.toString()
+        itemView.setOnClickListener {
             onClickListener(item)
         }
 
@@ -28,12 +31,28 @@ class InvoiceViewHolder(view: View): ViewHolder(view) {
         * Si el texto de estado de las facturas es 'Pendiente de pago' se coloreará de rojo,
         * si no de verde.
         */
-        if (binding.itemEstado.text.equals("Pendiente de pago")) {
-            val notPaiInvoice = ContextCompat.getColor(itemView.context, R.color.pendingPaymentInvoice)
+        if (!binding.itemEstado.text.equals("Pagada")) {
+            val notPaiInvoice =
+                ContextCompat.getColor(itemView.context, R.color.pendingPaymentInvoice)
             binding.itemEstado.setTextColor(notPaiInvoice)
-        } else{
-            val paidInvoice = ContextCompat.getColor(itemView.context, R.color.paidInvoice)
-            binding.itemEstado.setTextColor(paidInvoice)
+            binding.itemEstado.visibility = View.VISIBLE
+        }
+
+
+    }
+
+    fun formatDate(date: String): String {
+        try {
+            val insert = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
+            val format = insert.parse(date)
+            val outputFormat = SimpleDateFormat("dd MMM yyyy", Locale("es", "ES"))
+
+            return format?.let { outputFormat.format(it) } ?: date
+
+
+        } catch (e: ParseException) {
+            e.printStackTrace()
+            return date
         }
     }
 }

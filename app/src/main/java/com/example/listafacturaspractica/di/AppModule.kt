@@ -1,8 +1,12 @@
 package com.example.listafacturaspractica.di
 
 import android.content.Context
+import co.infinum.retromock.Retromock
+import com.example.listafacturaspractica.ResourceBodyFactory
 import com.example.listafacturaspractica.data.database.InvoiceDao
 import com.example.listafacturaspractica.data.database.InvoiceDatabase
+import com.example.listafacturaspractica.data.network.APIRetrofitService
+import com.example.listafacturaspractica.data.network.APIRetromockService
 import com.example.listafacturaspractica.data.network.RetroService
 import dagger.Module
 import dagger.Provides
@@ -25,6 +29,17 @@ import javax.inject.Singleton
 @Module
 @InstallIn(SingletonComponent::class)
 class AppModule {
+
+    companion object {
+        private var data = "real"
+        @Provides
+        fun getData(): String {
+            return data
+        }
+        fun setData(newData: String) {
+            data = newData
+        }
+    }
 
     /**
      * Métdodo que obtiene un instancia de la Base de Datos con Room.
@@ -66,8 +81,12 @@ class AppModule {
      */
     @Provides
     @Singleton
-    fun getRetroServiceInterface(retrofit: Retrofit): RetroService {
-        return retrofit.create(RetroService::class.java)
+    fun getRetroServiceInterface(retrofit: Retrofit, retromock: Retromock, data: String): RetroService {
+        return when (data) {
+            "real" -> retrofit.create(APIRetrofitService::class.java)
+            "ficticio" -> retromock.create(APIRetromockService::class.java)
+            else -> throw Error("No implementado")
+        }
     }
 
     /**
@@ -82,5 +101,15 @@ class AppModule {
             .baseUrl(BASE_URL)
             .addConverterFactory(GsonConverterFactory.create())
             .build()
+    }
+
+    @Provides
+    @Singleton
+    fun getRetromockInstance(retrofit: Retrofit): Retromock {
+        return Retromock.Builder()
+            .retrofit(retrofit)
+            .defaultBodyFactory(ResourceBodyFactory())
+            .build()
+
     }
 }
