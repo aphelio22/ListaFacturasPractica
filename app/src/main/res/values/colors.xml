@@ -14,5 +14,5 @@
     <color name="pendingPaymentInvoice">#D50000</color>
     <color name="delete">#a3c1ad</color>
     <color name="titles">#696969</color>
-    <color name="paidInvoice">#69EB59</color>
+    <color name="paidInvoice">#8BC34A</color>
 </resources>

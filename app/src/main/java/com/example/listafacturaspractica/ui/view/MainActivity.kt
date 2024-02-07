@@ -60,6 +60,8 @@ class MainActivity : AppCompatActivity() {
      */
     private var maxAmount: Double = 0.0
 
+    private var minDate: Date? = null
+
     private lateinit var intentLaunch: ActivityResultLauncher<Intent>
 
     private val onBackInvokedCallback = object : OnBackPressedCallback(true){
@@ -67,6 +69,7 @@ class MainActivity : AppCompatActivity() {
             finishAffinity()
         }
     }
+
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -92,6 +95,8 @@ class MainActivity : AppCompatActivity() {
                     }
                 }
             }
+        val switchState = getSwitchStateFromSharedPreferences()
+        binding.switchRetromock.isChecked = switchState
     }
 
 
@@ -136,11 +141,23 @@ class MainActivity : AppCompatActivity() {
             }
             invoiceAdapter.notifyDataSetChanged()
 
-            callInvoices(it)
+
+            binding.switchRetromock.setOnClickListener {
+                val isChecked = binding.switchRetromock.isChecked
+                saveSwitchState(isChecked)
+                if (binding.switchRetromock.isChecked) {
+                    viewModel.changeService("ficticio")
+                    viewModel.makeApiCall()
+                } else {
+                    viewModel.changeService("real")
+                    viewModel.makeApiCall()
+                }
+            }
             applyFilters(it)
 
             //Se obtiene el máximo importe de las facturas para enviarse a FilterActivity.
             maxAmount = getMaxAmount(it)
+           // minDate = getMinDate(it)
         })
     }
 
@@ -182,6 +199,8 @@ class MainActivity : AppCompatActivity() {
                 //Si la lista está vacía se hace visible 'tvEmptyList'.
                 if (invoiceList.isEmpty()) {
                     binding.tvEmptyList.visibility = View.VISIBLE
+                } else {
+                    binding.tvEmptyList.visibility = View.INVISIBLE
                 }
 
                 //Se le pasa al adaptador la lista filtrada.
@@ -210,6 +229,7 @@ class MainActivity : AppCompatActivity() {
                 if (filter != null) {
                     miIntent.putExtra(Constants.SEND_RECEIVE_FILTERS, gson.toJson(filter))
                 }
+                Log.d("hola", maxAmount.toString())
                 intentLaunch.launch(miIntent)
                 true
             }
@@ -240,6 +260,32 @@ class MainActivity : AppCompatActivity() {
             }
         }
         return maxAmount
+    }
+
+    /**
+     * Obtiene la fecha mínima de toda la lista de facturas en el formato "yyyy/MM/dd".
+     *
+     * @param invoiceList Lista de facturas.
+     * @return La fecha mínima en formato "yyyy/MM/dd" como String.
+     */
+    private fun getMinDate(invoiceList: List<Invoice>): String? {
+        var minDate: Date? = null
+        val dateFormatInput = SimpleDateFormat("EEE MMM dd HH:mm:ss z yyyy", Locale.getDefault())
+        val dateFormatOutput = SimpleDateFormat("yyyy/MM/dd", Locale.getDefault())
+
+        for (invoice in invoiceList) {
+            val actualInvoiceDateStr = invoice.fecha
+            try {
+                val actualInvoiceDate = dateFormatInput.parse(actualInvoiceDateStr)
+                if (minDate == null || actualInvoiceDate.before(minDate)) {
+                    minDate = actualInvoiceDate
+                }
+            } catch (e: Exception) {
+                // Maneja la excepción de análisis de fecha según tus necesidades.
+                e.printStackTrace()
+            }
+        }
+        return minDate?.let { dateFormatOutput.format(it) }
     }
 
     /**
@@ -283,6 +329,8 @@ class MainActivity : AppCompatActivity() {
                     filteredInvoices.add(invoice)
                 }
             }
+        } else {
+            return invoiceList
         }
         return filteredInvoices
     }
@@ -365,6 +413,11 @@ class MainActivity : AppCompatActivity() {
         prefs.edit().putString("FILTERED_LIST", filteredListJson).apply()
     }
 
+    private fun saveSwitchState(state: Boolean) {
+        val preferences = getPreferences(MODE_PRIVATE)
+        preferences.edit().putBoolean("SWITCH_STATE", state).apply()
+    }
+
     /**
      * Carga la lista filrada en SharedPreferences.
      *
@@ -381,5 +434,9 @@ class MainActivity : AppCompatActivity() {
         } else {
             null
         }
+    }
+    private fun getSwitchStateFromSharedPreferences(): Boolean {
+        val prefs: SharedPreferences = getPreferences(MODE_PRIVATE)
+        return prefs.getBoolean("SWITCH_STATE", false)
     }
 }
