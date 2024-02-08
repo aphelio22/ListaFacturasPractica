@@ -67,6 +67,9 @@ class FilterActivity : AppCompatActivity() {
      */
     private lateinit var paymentPlan: CheckBox
 
+    /**
+     * Inicialización del intentLaunch.
+     */
     private lateinit var intentLaunch: ActivityResultLauncher<Intent>
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -78,15 +81,14 @@ class FilterActivity : AppCompatActivity() {
 
         initComponents()
         applySavedFilters()
-        intentLaunch =
-            registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result: ActivityResult ->
+
+        //IntentLaunch para recibir los datos de los filtros desde MainActivity.
+        intentLaunch = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result: ActivityResult ->
                 if (result.resultCode == RESULT_OK) {
-                    val maxImporte = result.data?.extras?.getDouble(Constants.MAX_AMOUNT) ?: 0.0
                     val filtroJson = result.data?.extras?.getString(Constants.SEND_RECEIVE_FILTERS)
                     if (filtroJson != null) {
                         val gson = Gson()
-                        val objFiltro = gson.fromJson(filtroJson, Filter::class.java)
-                        // Hacer lo que sea necesario con objFiltro y maxImporte
+                        filter = gson.fromJson(filtroJson, Filter::class.java)
                     }
                 }
             }
@@ -130,6 +132,15 @@ class FilterActivity : AppCompatActivity() {
                 month,
                 day
             )
+            val simpleDateFormat = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
+            val maxDateLocal = binding.fechaHasta.text.toString()
+            val maxDate: Date
+            try {
+                maxDate = simpleDateFormat.parse(maxDateLocal)
+                datePickerDialog.datePicker.maxDate = maxDate.time
+            } catch (e: ParseException) {
+                e.printStackTrace()
+            }
             datePickerDialog.show()
         }
     }
@@ -153,6 +164,7 @@ class FilterActivity : AppCompatActivity() {
                 month,
                 day
             )
+
             val simpleDateFormat = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
             val minDateLocal = binding.minDate.text.toString()
             val minDate: Date
@@ -300,8 +312,6 @@ class FilterActivity : AppCompatActivity() {
 
             val minDate = binding.minDate.text.toString()
             val maxDate = binding.fechaHasta.text.toString()
-
-
 
             if ((minDate == "Dia/Mes/Año" && maxDate == "Dia/Mes/Año") || (minDate != "Dia/Mes/Año" && maxDate != "Dia/Mes/Año")) {
                 val filter: Filter = Filter(maxDate, minDate, maxValueSlider, state)

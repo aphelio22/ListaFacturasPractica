@@ -60,43 +60,48 @@ class MainActivity : AppCompatActivity() {
      */
     private var maxAmount: Double = 0.0
 
+    /**
+     * Inicialización del intentLaunch.
+     */
     private lateinit var intentLaunch: ActivityResultLauncher<Intent>
 
+    /**
+     * Variable para cerrar la app cuando se le da al botón atrás en MainActivity.
+     */
     private val onBackInvokedCallback = object : OnBackPressedCallback(true){
         override fun handleOnBackPressed() {
             finishAffinity()
         }
     }
 
-
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        //Cierra la aplicación cuando se da al botón retroceder en la MainActivity.
         onBackPressedDispatcher.addCallback(this, onBackInvokedCallback)
 
         //Establece el título de la Toolbar en 'Facturas'.
         supportActionBar?.setTitle("Facturas")
 
         initComponents()
-        intentLaunch =
-            registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result: ActivityResult ->
+
+        //IntentLaunch para recibir los datos de los filtros desde FilterActivity.
+        intentLaunch = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result: ActivityResult ->
                 if (result.resultCode == RESULT_OK) {
-                    val maxImporte = result.data?.extras?.getDouble(Constants.MAX_AMOUNT) ?: 0.0
                     val filtroJson = result.data?.extras?.getString(Constants.SEND_RECEIVE_FILTERS)
                     if (filtroJson != null) {
                         val gson = Gson()
-                        val objFiltro = gson.fromJson(filtroJson, Filter::class.java)
+                        filter = gson.fromJson(filtroJson, Filter::class.java)
                     }
                 }
             }
+
+        //Establece la configuración del switch desde SharedPreferences.
         val switchState = getSwitchStateFromSharedPreferences()
         binding.switchRetromock.isChecked = switchState
     }
-
-
 
     /**
      * Inicializa los componentes relacionados con la comunicación entre la interfaz de usuario
@@ -129,14 +134,16 @@ class MainActivity : AppCompatActivity() {
     private fun initViewModel() {
         //val viewModel = ViewModelProvider(this).get(InvoiceViewModel::class.java)
         viewModel.getAllRepositoryList().observe(this, Observer<List<Invoice>> {
-
+            callInvoices(it)
+            invoiceAdapter.notifyDataSetChanged()
             var filteredList = getFilteredListFromSharedPreferences()
             if (filteredList == null || filteredList.isEmpty()) { //Si la lista filtrada no está en SharedPreferences, carga la lista original.
                 invoiceAdapter.setListInvoices(it)
             } else {  //Si hay una lista filtrada almacenada, se usa.
                 invoiceAdapter.setListInvoices(filteredList)
             }
-            callInvoices(it)
+
+            //Switch que cambia entre retromock y la lista real.
             binding.switchRetromock.setOnClickListener {
                 val isChecked = binding.switchRetromock.isChecked
                 saveSwitchState(isChecked)
@@ -152,8 +159,6 @@ class MainActivity : AppCompatActivity() {
 
             //Se obtiene el máximo importe de las facturas para enviarse a FilterActivity.
             maxAmount = getMaxAmount(it)
-            //minDate = getMinDate(it)
-            invoiceAdapter.notifyDataSetChanged()
         })
     }
 
@@ -256,32 +261,6 @@ class MainActivity : AppCompatActivity() {
             }
         }
         return maxAmount
-    }
-
-    /**
-     * Obtiene la fecha mínima de toda la lista de facturas en el formato "yyyy/MM/dd".
-     *
-     * @param invoiceList Lista de facturas.
-     * @return La fecha mínima en formato "yyyy/MM/dd" como String.
-     */
-    private fun getMinDate(invoiceList: List<Invoice>): String? {
-        var minDate: Date? = null
-        val dateFormatInput = SimpleDateFormat("EEE MMM dd HH:mm:ss z yyyy", Locale.getDefault())
-        val dateFormatOutput = SimpleDateFormat("yyyy/MM/dd", Locale.getDefault())
-
-        for (invoice in invoiceList) {
-            val actualInvoiceDateStr = invoice.fecha
-            try {
-                val actualInvoiceDate = dateFormatInput.parse(actualInvoiceDateStr)
-                if (minDate == null || actualInvoiceDate.before(minDate)) {
-                    minDate = actualInvoiceDate
-                }
-            } catch (e: Exception) {
-                // Maneja la excepción de análisis de fecha según tus necesidades.
-                e.printStackTrace()
-            }
-        }
-        return minDate?.let { dateFormatOutput.format(it) }
     }
 
     /**
@@ -409,6 +388,11 @@ class MainActivity : AppCompatActivity() {
         prefs.edit().putString("FILTERED_LIST", filteredListJson).apply()
     }
 
+    /**
+     * Guarda el estado del switch en SharedPreferences.
+     *
+     * @param state Estado del switch.
+     */
     private fun saveSwitchState(state: Boolean) {
         val preferences = getPreferences(MODE_PRIVATE)
         preferences.edit().putBoolean("SWITCH_STATE", state).apply()
@@ -417,7 +401,7 @@ class MainActivity : AppCompatActivity() {
     /**
      * Carga la lista filrada en SharedPreferences.
      *
-     * @param invoiceList Lista de facturas.
+     * @return Lista de facturas almacenada.
      */
     private fun getFilteredListFromSharedPreferences(): List<Invoice>? {
         val prefs: SharedPreferences = getPreferences(MODE_PRIVATE)
@@ -431,6 +415,12 @@ class MainActivity : AppCompatActivity() {
             null
         }
     }
+
+    /**
+     * Obtiene el estado del switch desde la lista filtrada.
+     *
+     * @return El estado del switch.
+     */
     private fun getSwitchStateFromSharedPreferences(): Boolean {
         val prefs: SharedPreferences = getPreferences(MODE_PRIVATE)
         return prefs.getBoolean("SWITCH_STATE", false)
