@@ -60,8 +60,6 @@ class MainActivity : AppCompatActivity() {
      */
     private var maxAmount: Double = 0.0
 
-    private var minDate: Date? = null
-
     private lateinit var intentLaunch: ActivityResultLauncher<Intent>
 
     private val onBackInvokedCallback = object : OnBackPressedCallback(true){
@@ -91,7 +89,6 @@ class MainActivity : AppCompatActivity() {
                     if (filtroJson != null) {
                         val gson = Gson()
                         val objFiltro = gson.fromJson(filtroJson, Filter::class.java)
-                        // Hacer lo que sea necesario con objFiltro y maxImporte
                     }
                 }
             }
@@ -139,9 +136,7 @@ class MainActivity : AppCompatActivity() {
             } else {  //Si hay una lista filtrada almacenada, se usa.
                 invoiceAdapter.setListInvoices(filteredList)
             }
-            invoiceAdapter.notifyDataSetChanged()
-
-
+            callInvoices(it)
             binding.switchRetromock.setOnClickListener {
                 val isChecked = binding.switchRetromock.isChecked
                 saveSwitchState(isChecked)
@@ -157,7 +152,8 @@ class MainActivity : AppCompatActivity() {
 
             //Se obtiene el máximo importe de las facturas para enviarse a FilterActivity.
             maxAmount = getMaxAmount(it)
-           // minDate = getMinDate(it)
+            //minDate = getMinDate(it)
+            invoiceAdapter.notifyDataSetChanged()
         })
     }
 

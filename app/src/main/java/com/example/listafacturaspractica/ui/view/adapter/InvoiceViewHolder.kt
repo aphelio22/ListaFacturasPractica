@@ -1,9 +1,11 @@
 package com.example.listafacturaspractica.ui.view.adapter
 
+import android.graphics.Color
 import android.view.View
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import com.example.listafacturaspractica.R
+import com.example.listafacturaspractica.R.color.pendingPaymentInvoice
 import com.example.listafacturaspractica.databinding.ItemFacturasBinding
 import com.example.listafacturaspractica.data.database.Invoice
 import java.text.ParseException
@@ -31,11 +33,13 @@ class InvoiceViewHolder(view: View): ViewHolder(view) {
         * Si el texto de estado de las facturas es 'Pendiente de pago' se coloreará de rojo,
         * si no de verde.
         */
-        if (!binding.itemEstado.text.equals("Pagada")) {
-            val notPaiInvoice =
-                ContextCompat.getColor(itemView.context, R.color.pendingPaymentInvoice)
-            binding.itemEstado.setTextColor(notPaiInvoice)
+        if (binding.itemEstado.text == "Pendiente de pago"){
             binding.itemEstado.visibility = View.VISIBLE
+            binding.itemEstado.setTextColor(Color.RED)
+        } else if (binding.itemEstado.text == "Pagada") {
+            binding.itemEstado.text = ""
+        } else {
+            binding.itemEstado.setTextColor(Color.GRAY)
         }
 
 

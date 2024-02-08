@@ -303,7 +303,7 @@ class FilterActivity : AppCompatActivity() {
 
 
 
-            if (!minDate.equals("Dia/Mes/Año") && !maxDate.equals("Dia/Mes/Año")) {
+            if ((minDate == "Dia/Mes/Año" && maxDate == "Dia/Mes/Año") || (minDate != "Dia/Mes/Año" && maxDate != "Dia/Mes/Año")) {
                 val filter: Filter = Filter(maxDate, minDate, maxValueSlider, state)
                 val miIntent = Intent(this, MainActivity::class.java)
                 miIntent.putExtra(Constants.SEND_RECEIVE_FILTERS, gson.toJson(filter))
