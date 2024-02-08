@@ -3,6 +3,7 @@
     <style name="Base.Theme.ListaFacturasPractica" parent="Theme.Material3.DayNight">
         <!-- Customize your light theme here. -->
         <item name="colorPrimary">@color/paidInvoice</item>
+        <item name="colorSecondary">@color/paidInvoice</item>
     </style>
 
     <style name="Theme.ListaFacturasPractica" parent="Base.Theme.ListaFacturasPractica" />
