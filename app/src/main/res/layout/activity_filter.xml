@@ -213,7 +213,7 @@
                 app:layout_constraintTop_toBottomOf="@+id/cbFixedPayment" />
 
             <CheckBox
-                android:id="@+id/cbPlanPago"
+                android:id="@+id/cbPaymentPlan"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="5dp"
