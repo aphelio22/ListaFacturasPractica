@@ -117,7 +117,7 @@ class FilterActivity : AppCompatActivity() {
      * Inicializa el botón de fecha mínima.
      */
     private fun initMinDateButton() {
-        binding.minDate.setOnClickListener {
+        binding.btMinDate.setOnClickListener {
             val c = Calendar.getInstance()
             val year = c.get(Calendar.YEAR)
             val month = c.get(Calendar.MONTH)
@@ -126,14 +126,14 @@ class FilterActivity : AppCompatActivity() {
             val datePickerDialog = DatePickerDialog(
                 this,
                 DatePickerDialog.OnDateSetListener { view, year1, monthOfYear, dayOfMonth ->
-                    binding.minDate.text = "$dayOfMonth/${monthOfYear + 1}/$year1"
+                    binding.btMinDate.text = "$dayOfMonth/${monthOfYear + 1}/$year1"
                 },
                 year,
                 month,
                 day
             )
             val simpleDateFormat = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
-            val maxDateLocal = binding.fechaHasta.text.toString()
+            val maxDateLocal = binding.btMaxDate.text.toString()
             val maxDate: Date
             try {
                 maxDate = simpleDateFormat.parse(maxDateLocal)
@@ -149,7 +149,7 @@ class FilterActivity : AppCompatActivity() {
      * Inicializa el botón de fecha máxima.
      */
     private fun initMaxDateButton() {
-        binding.fechaHasta.setOnClickListener {
+        binding.btMaxDate.setOnClickListener {
             val c = Calendar.getInstance()
             val year = c.get(Calendar.YEAR)
             val month = c.get(Calendar.MONTH)
@@ -158,7 +158,7 @@ class FilterActivity : AppCompatActivity() {
             val datePickerDialog = DatePickerDialog(
                 this,
                 DatePickerDialog.OnDateSetListener { view, year1, monthOfYear, dayOfMonth ->
-                    binding.fechaHasta.text = "$dayOfMonth/${monthOfYear + 1}/$year1"
+                    binding.btMaxDate.text = "$dayOfMonth/${monthOfYear + 1}/$year1"
                 },
                 year,
                 month,
@@ -166,7 +166,7 @@ class FilterActivity : AppCompatActivity() {
             )
 
             val simpleDateFormat = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
-            val minDateLocal = binding.minDate.text.toString()
+            val minDateLocal = binding.btMinDate.text.toString()
             val minDate: Date
             try {
                 minDate = simpleDateFormat.parse(minDateLocal)
@@ -262,8 +262,8 @@ class FilterActivity : AppCompatActivity() {
      * Carga los filtros guardados.
      */
     private fun loadFilters(filter: Filter) {
-        binding.minDate.text = filter.minDate
-        binding.fechaHasta.text = filter.maxDate
+        binding.btMinDate.text = filter.minDate
+        binding.btMaxDate.text = filter.maxDate
         binding.seekBar.progress = filter.maxValueSlider.toInt()
         binding.cbPagadas.isChecked = filter.estate[Constants.PAID_STRING] ?: false
         binding.cbAnuladas.isChecked = filter.estate[Constants.CANCELED_STRING] ?: false
@@ -285,8 +285,8 @@ class FilterActivity : AppCompatActivity() {
             Constants.PENDING_PAYMENT_STRING to pendingPayment.isChecked,
             Constants.PAYMENT_PLAN_STRING to paymentPlan.isChecked
         )
-        val minDate = binding.minDate.text.toString()
-        val maxDate = binding.fechaHasta.text.toString()
+        val minDate = binding.btMinDate.text.toString()
+        val maxDate = binding.btMaxDate.text.toString()
         filter = Filter(maxDate, minDate, maxValueSlider, state)
 
         //Guarda el estado de los filtros en las preferencias compartidas.
@@ -310,8 +310,8 @@ class FilterActivity : AppCompatActivity() {
                 Constants.PAYMENT_PLAN_STRING to paymentPlan.isChecked
             )
 
-            val minDate = binding.minDate.text.toString()
-            val maxDate = binding.fechaHasta.text.toString()
+            val minDate = binding.btMinDate.text.toString()
+            val maxDate = binding.btMaxDate.text.toString()
 
             if ((minDate == getString(R.string.dayMonthYear) && maxDate == getString(R.string.dayMonthYear)) || (minDate != getString(R.string.dayMonthYear) && maxDate != getString(R.string.dayMonthYear))) {
                 val filter: Filter = Filter(maxDate, minDate, maxValueSlider, state)
@@ -360,8 +360,8 @@ class FilterActivity : AppCompatActivity() {
      */
     private fun resetFilters() {
         maxAmount = intent.getDoubleExtra(Constants.MAX_AMOUNT, 0.0).toInt() + 1
-        binding.minDate.text = getString(R.string.dayMonthYear)
-        binding.fechaHasta.text = getString(R.string.dayMonthYear)
+        binding.btMinDate.text = getString(R.string.dayMonthYear)
+        binding.btMaxDate.text = getString(R.string.dayMonthYear)
         binding.seekBar.progress = maxAmount
         binding.cbPagadas.isChecked = false
         binding.cbAnuladas.isChecked = false

@@ -39,8 +39,8 @@
                 android:layout_marginTop="35dp"
                 android:text="@string/sinceTitle"
                 android:textSize="20sp"
-                app:layout_constraintBottom_toTopOf="@+id/minDate"
-                app:layout_constraintStart_toStartOf="@+id/minDate"
+                app:layout_constraintBottom_toTopOf="@+id/btMinDate"
+                app:layout_constraintStart_toStartOf="@+id/btMinDate"
                 app:layout_constraintTop_toTopOf="parent" />
 
             <TextView
@@ -50,12 +50,12 @@
                 android:layout_marginTop="35dp"
                 android:text="@string/untilTitle"
                 android:textSize="20sp"
-                app:layout_constraintBottom_toTopOf="@+id/fechaHasta"
-                app:layout_constraintStart_toStartOf="@+id/fechaHasta"
+                app:layout_constraintBottom_toTopOf="@+id/btMaxDate"
+                app:layout_constraintStart_toStartOf="@+id/btMaxDate"
                 app:layout_constraintTop_toTopOf="parent" />
 
             <Button
-                android:id="@+id/minDate"
+                android:id="@+id/btMinDate"
                 android:background="@drawable/round_button"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -72,7 +72,7 @@
                 app:layout_constraintTop_toTopOf="parent" />
 
             <Button
-                android:id="@+id/fechaHasta"
+                android:id="@+id/btMaxDate"
                 android:background="@drawable/round_button"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -93,7 +93,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
                 android:layout_marginTop="40dp"
-                app:layout_constraintTop_toBottomOf="@+id/minDate" />
+                app:layout_constraintTop_toBottomOf="@+id/btMinDate" />
 
             <TextView
                 android:id="@+id/tvImporteTitulo"
