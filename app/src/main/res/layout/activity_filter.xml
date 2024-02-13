@@ -160,7 +160,7 @@
                 app:layout_constraintTop_toBottomOf="@+id/seekBar" />
 
             <TextView
-                android:id="@+id/tvEstadoTitulo"
+                android:id="@+id/tvTitleState"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="325dp"
@@ -179,8 +179,8 @@
                 android:layout_marginTop="7dp"
                 android:text="@string/paid"
                 android:textSize="20sp"
-                app:layout_constraintStart_toStartOf="@+id/tvEstadoTitulo"
-                app:layout_constraintTop_toBottomOf="@+id/tvEstadoTitulo" />
+                app:layout_constraintStart_toStartOf="@+id/tvTitleState"
+                app:layout_constraintTop_toBottomOf="@+id/tvTitleState" />
 
             <CheckBox
                 android:id="@+id/cbAnuladas"
