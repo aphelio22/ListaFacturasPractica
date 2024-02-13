@@ -214,8 +214,8 @@ class FilterActivity : AppCompatActivity() {
      */
     private fun initCheckBoxes() {
         paid = binding.cbPaid
-        canceled = binding.cbAnuladas
-        fixedPayment = binding.cbCuotaFija
+        canceled = binding.cbCanceled
+        fixedPayment = binding.cbFixedPayment
         pendingPayment = binding.cbPendientesPago
         paymentPlan = binding.cbPlanPago
     }
@@ -266,8 +266,8 @@ class FilterActivity : AppCompatActivity() {
         binding.btMaxDate.text = filter.maxDate
         binding.seekBar.progress = filter.maxValueSlider.toInt()
         binding.cbPaid.isChecked = filter.estate[Constants.PAID_STRING] ?: false
-        binding.cbAnuladas.isChecked = filter.estate[Constants.CANCELED_STRING] ?: false
-        binding.cbCuotaFija.isChecked = filter.estate[Constants.FIXED_PAYMENT_STRING] ?: false
+        binding.cbCanceled.isChecked = filter.estate[Constants.CANCELED_STRING] ?: false
+        binding.cbFixedPayment.isChecked = filter.estate[Constants.FIXED_PAYMENT_STRING] ?: false
         binding.cbPendientesPago.isChecked = filter.estate[Constants.PENDING_PAYMENT_STRING] ?: false
         binding.cbPlanPago.isChecked = filter.estate[Constants.PAYMENT_PLAN_STRING] ?: false
     }
@@ -364,8 +364,8 @@ class FilterActivity : AppCompatActivity() {
         binding.btMaxDate.text = getString(R.string.dayMonthYear)
         binding.seekBar.progress = maxAmount
         binding.cbPaid.isChecked = false
-        binding.cbAnuladas.isChecked = false
-        binding.cbCuotaFija.isChecked = false
+        binding.cbCanceled.isChecked = false
+        binding.cbFixedPayment.isChecked = false
         binding.cbPendientesPago.isChecked = false
         binding.cbPlanPago.isChecked = false
 
