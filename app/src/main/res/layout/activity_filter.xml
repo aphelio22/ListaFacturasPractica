@@ -89,7 +89,7 @@
                 app:layout_constraintTop_toTopOf="parent" />
 
             <View
-                android:id="@+id/viewEmisionAImporte"
+                android:id="@+id/vIssueDateToAmountTitle"
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
                 android:layout_marginTop="40dp"
@@ -106,7 +106,7 @@
                 android:layout_marginBottom="25dp"
                 app:layout_constraintBottom_toTopOf="@+id/tvMinSeekbar"
                 app:layout_constraintStart_toStartOf="@+id/seekBar"
-                app:layout_constraintTop_toBottomOf="@+id/viewEmisionAImporte" />
+                app:layout_constraintTop_toBottomOf="@+id/vIssueDateToAmountTitle" />
 
             <TextView
                 android:id="@+id/tvMinSeekbar"
@@ -125,9 +125,9 @@
                 android:text="@string/SeekBarProgress"
                 android:textSize="20sp"
                 app:layout_constraintBottom_toTopOf="@+id/seekBar"
-                app:layout_constraintEnd_toEndOf="@+id/viewEmisionAImporte"
-                app:layout_constraintStart_toStartOf="@+id/viewEmisionAImporte"
-                app:layout_constraintTop_toBottomOf="@+id/viewEmisionAImporte" />
+                app:layout_constraintEnd_toEndOf="@+id/vIssueDateToAmountTitle"
+                app:layout_constraintStart_toStartOf="@+id/vIssueDateToAmountTitle"
+                app:layout_constraintTop_toBottomOf="@+id/vIssueDateToAmountTitle" />
 
             <TextView
                 android:id="@+id/tvMaxSeekbar"
@@ -147,14 +147,13 @@
                 android:layout_marginEnd="32dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/viewEmisionAImporte" />
+                app:layout_constraintTop_toBottomOf="@+id/vIssueDateToAmountTitle" />
 
             <View
-                android:id="@+id/viewImporteAEstado"
+                android:id="@+id/vAmountTitleToTitleState"
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
                 android:layout_marginTop="20dp"
-
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/seekBar" />
@@ -170,7 +169,7 @@
                 android:textStyle="bold"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="@+id/seekBar"
-                app:layout_constraintTop_toBottomOf="@+id/viewImporteAEstado" />
+                app:layout_constraintTop_toBottomOf="@+id/vAmountTitleToTitleState" />
 
             <CheckBox
                 android:id="@+id/cbPaid"
