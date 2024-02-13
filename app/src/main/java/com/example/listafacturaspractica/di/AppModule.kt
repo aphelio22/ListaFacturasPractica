@@ -62,13 +62,29 @@ class AppModule {
      */
     val BASE_URL = "https://viewnextandroid.wiremockapi.cloud/"
 
-
+    /**
+     * Proporciona una instancia única de la interfaz APIRetrofitService utilizando la instancia de Retrofit proporcionada.
+     *
+     * Este método está anotado con {@code @Provides}, lo que indica que se utiliza para proporcionar instancias
+     * del tipo especificado (APIRetrofitService en este caso) al marco de inyección de dependencias Dagger.
+     * La anotación {@code @Singleton} garantiza que se crea una sola instancia del tipo proporcionado y se reutiliza
+     * en toda la aplicación.
+     *
+     * @param retrofit La instancia de Retrofit utilizada para crear la instancia de APIRetrofitService.
+     * @return Una instancia única de APIRetrofitService.
+     */
     @Provides
     @Singleton
     fun getRetrofit(retrofit: Retrofit): APIRetrofitService {
         return retrofit.create(APIRetrofitService::class.java)
     }
 
+    /**
+     * Método para obtener una instancia de APIRetromockService a partir de una instancia de Retromock.
+     *
+     * @param retromock Instancia de Retromock utilizada para crear la instancia de APIRetromockService.
+     * @return Instancia de APIRetromockService creada a partir de la instancia de Retromock proporcionada.
+     */
     @Provides
     @Singleton
     fun getRetromock(retromock: Retromock): APIRetromockService {
@@ -89,6 +105,12 @@ class AppModule {
             .build()
     }
 
+    /**
+     * Método para construir una instancia de Retromock.
+     *
+     * @param retrofit Objeto Retrofit que se utilizará para construir la instancia de Retromock.
+     * @return Instancia de Retromock configurada con el Retrofit proporcionado y una fábrica de cuerpo predeterminada.
+     */
     @Provides
     @Singleton
     fun buildRetromockInstance(retrofit: Retrofit): Retromock {
