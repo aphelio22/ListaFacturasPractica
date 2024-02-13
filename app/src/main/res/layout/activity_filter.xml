@@ -96,7 +96,7 @@
                 app:layout_constraintTop_toBottomOf="@+id/btMinDate" />
 
             <TextView
-                android:id="@+id/tvImporteTitulo"
+                android:id="@+id/tvAmountTitle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/amountTitle"
@@ -118,7 +118,7 @@
                 app:layout_constraintStart_toStartOf="@+id/seekBar" />
 
             <TextView
-                android:id="@+id/valorSeekBar"
+                android:id="@+id/seekBarValue"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="20dp"

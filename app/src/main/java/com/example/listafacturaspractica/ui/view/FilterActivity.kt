@@ -187,14 +187,14 @@ class FilterActivity : AppCompatActivity() {
         binding.seekBar.max = maxAmount
         binding.tvMaxSeekbar.text = "${maxAmount}"
         binding.tvMinSeekbar.text = "0"
-        binding.valorSeekBar.text = "${maxAmount}"
+        binding.seekBarValue.text = "${maxAmount}"
         binding.seekBar.progress = maxAmount
 
 
         //Configuración del Listener para el SeekBar.
         binding.seekBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
             override fun onProgressChanged(seekBar: SeekBar, progress: Int, fromUser: Boolean) {
-                binding.valorSeekBar.text = progress.toString()
+                binding.seekBarValue.text = progress.toString()
             }
 
             override fun onStartTrackingTouch(seekBar: SeekBar) {
@@ -277,7 +277,7 @@ class FilterActivity : AppCompatActivity() {
      */
     private fun updateAndSaveFilters() {
         //Actualiza los filtros.
-        val maxValueSlider = binding.valorSeekBar.text.toString().toDouble()
+        val maxValueSlider = binding.seekBarValue.text.toString().toDouble()
         val state = hashMapOf(
             Constants.PAID_STRING to paid.isChecked,
             Constants.CANCELED_STRING to canceled.isChecked,
@@ -300,7 +300,7 @@ class FilterActivity : AppCompatActivity() {
         binding.aplicar.setOnClickListener {
             updateAndSaveFilters()
             val gson = Gson()
-            val maxValueSlider = binding.valorSeekBar.text.toString().toDouble()
+            val maxValueSlider = binding.seekBarValue.text.toString().toDouble()
 
             val state = hashMapOf(
                 Constants.PAID_STRING to paid.isChecked,
