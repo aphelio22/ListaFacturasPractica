@@ -183,7 +183,7 @@
                 app:layout_constraintTop_toBottomOf="@+id/tvTitleState" />
 
             <CheckBox
-                android:id="@+id/cbAnuladas"
+                android:id="@+id/cbCanceled"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="3dp"
@@ -199,8 +199,8 @@
                 android:layout_marginTop="5dp"
                 android:text="@string/fixedPayment"
                 android:textSize="20sp"
-                app:layout_constraintStart_toStartOf="@+id/cbAnuladas"
-                app:layout_constraintTop_toBottomOf="@+id/cbAnuladas" />
+                app:layout_constraintStart_toStartOf="@+id/cbCanceled"
+                app:layout_constraintTop_toBottomOf="@+id/cbCanceled" />
 
             <CheckBox
                 android:id="@+id/cbPendientesPago"
