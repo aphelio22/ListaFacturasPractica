@@ -216,7 +216,7 @@ class FilterActivity : AppCompatActivity() {
         paid = binding.cbPaid
         canceled = binding.cbCanceled
         fixedPayment = binding.cbFixedPayment
-        pendingPayment = binding.cbPendientesPago
+        pendingPayment = binding.cbPendingPayment
         paymentPlan = binding.cbPlanPago
     }
 
@@ -268,7 +268,7 @@ class FilterActivity : AppCompatActivity() {
         binding.cbPaid.isChecked = filter.estate[Constants.PAID_STRING] ?: false
         binding.cbCanceled.isChecked = filter.estate[Constants.CANCELED_STRING] ?: false
         binding.cbFixedPayment.isChecked = filter.estate[Constants.FIXED_PAYMENT_STRING] ?: false
-        binding.cbPendientesPago.isChecked = filter.estate[Constants.PENDING_PAYMENT_STRING] ?: false
+        binding.cbPendingPayment.isChecked = filter.estate[Constants.PENDING_PAYMENT_STRING] ?: false
         binding.cbPlanPago.isChecked = filter.estate[Constants.PAYMENT_PLAN_STRING] ?: false
     }
 
@@ -366,7 +366,7 @@ class FilterActivity : AppCompatActivity() {
         binding.cbPaid.isChecked = false
         binding.cbCanceled.isChecked = false
         binding.cbFixedPayment.isChecked = false
-        binding.cbPendientesPago.isChecked = false
+        binding.cbPendingPayment.isChecked = false
         binding.cbPlanPago.isChecked = false
 
     }
