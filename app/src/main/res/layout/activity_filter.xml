@@ -11,7 +11,7 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_marginTop="10dp"
-        app:layout_constraintBottom_toTopOf="@+id/aplicar"
+        app:layout_constraintBottom_toTopOf="@+id/btApplyFilters"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
@@ -226,7 +226,7 @@
     </androidx.core.widget.NestedScrollView>
 
     <Button
-        android:id="@+id/aplicar"
+        android:id="@+id/btApplyFilters"
         android:layout_width="0dp"
         android:layout_height="48dp"
         android:layout_marginStart="48dp"
@@ -253,7 +253,7 @@
         android:textColor="@color/delete"
         android:textSize="20sp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="@+id/aplicar"
-        app:layout_constraintStart_toStartOf="@+id/aplicar" />
+        app:layout_constraintEnd_toEndOf="@+id/btApplyFilters"
+        app:layout_constraintStart_toStartOf="@+id/btApplyFilters" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

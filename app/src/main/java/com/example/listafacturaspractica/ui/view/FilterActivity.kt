@@ -297,7 +297,7 @@ class FilterActivity : AppCompatActivity() {
      * Inicializa el botón para aplicar los filtros.
      */
     private fun initApplyFiltersButton() {
-        binding.aplicar.setOnClickListener {
+        binding.btApplyFilters.setOnClickListener {
             updateAndSaveFilters()
             val gson = Gson()
             val maxValueSlider = binding.seekBarValue.text.toString().toDouble()
