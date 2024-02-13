@@ -237,12 +237,12 @@
         android:textColor="@color/white"
         android:background="@drawable/round_button"
         android:textSize="20sp"
-        app:layout_constraintBottom_toTopOf="@+id/eliminar"
+        app:layout_constraintBottom_toTopOf="@+id/btRestoreFilters"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 
     <Button
-        android:id="@+id/eliminar"
+        android:id="@+id/btRestoreFilters"
         style="@style/Widget.AppCompat.Button.Borderless.Colored"
         android:layout_width="0dp"
         android:layout_height="wrap_content"

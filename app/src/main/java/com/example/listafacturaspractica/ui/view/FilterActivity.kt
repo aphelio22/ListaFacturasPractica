@@ -224,7 +224,7 @@ class FilterActivity : AppCompatActivity() {
      * Iniciliza el botón de resetear filtros.
      */
     private fun initResetFilterButton() {
-        binding.eliminar.setOnClickListener {
+        binding.btRestoreFilters.setOnClickListener {
             resetFilters()
         }
     }
