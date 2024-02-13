@@ -173,7 +173,7 @@
                 app:layout_constraintTop_toBottomOf="@+id/viewImporteAEstado" />
 
             <CheckBox
-                android:id="@+id/cbPagadas"
+                android:id="@+id/cbPaid"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="7dp"
@@ -189,8 +189,8 @@
                 android:layout_marginTop="3dp"
                 android:text="@string/canceled"
                 android:textSize="20sp"
-                app:layout_constraintStart_toStartOf="@+id/cbPagadas"
-                app:layout_constraintTop_toBottomOf="@+id/cbPagadas" />
+                app:layout_constraintStart_toStartOf="@+id/cbPaid"
+                app:layout_constraintTop_toBottomOf="@+id/cbPaid" />
 
             <CheckBox
                 android:id="@+id/cbCuotaFija"
